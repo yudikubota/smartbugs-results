@@ -1,0 +1,228 @@
+{
+    "results_by_tool": {
+        "confuzzius": {
+            "total_duration": 6079.617664813995,
+            "n_analysis": 29,
+            "n_findings": 6,
+            "findings": {
+                "Block_Dependency": 2,
+                "Integer_Overflow": 1,
+                "Assertion_Failure": 2,
+                "Transaction_Order_Dependency": 1
+            },
+            "n_errors": 50,
+            "errors": {
+                "EXIT_CODE_255": 4,
+                "No compiler output for: /sb/0x000000000000c1cb11d5c062901f32d06248ce48.sol": 1,
+                "EXIT_CODE_1": 5,
+                "EXIT_CODE_254": 10,
+                "Problem while deploying contract MultiSigWallet using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 1,
+                "No compiler output for: /sb/0x00000000008d4f01d63beee04b849eff60de7517.sol": 1,
+                "Problem while deploying contract Cashier using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 2,
+                "No compiler output for: /sb/0x000000000c07ef1297222d14ad9606342f3b8898.sol": 1,
+                "No compiler output for: /sb/0x00000000454a11ca3a574738c0aab442b62d5d45.sol": 1,
+                "Problem while deploying contract Stealth using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 1,
+                "Problem while deploying contract ERC721 using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 2,
+                "Problem while deploying contract SwapEncryption using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 1,
+                "Validation error: Sender account balance cannot afford txn (ignoring for now)": 1,
+                "Problem while deploying contract AggregatedTokenSwap using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 1,
+                "Problem while deploying contract PayableProxy using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 1,
+                "\"0x2a9b5b88: ['address'": 2,
+                "'tuple'": 2,
+                "'bytes'] -> ['0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef'": 2,
+                "None": 2,
+                "bytearray(b'\\x96\\xcd\\x0b\\xf2\\xd0\\x06\\x9cL\\xb37`\\xddcM\\xf53\\xe0\\x92+\\xa4+V\\nJ\\xf0\\xaarj\\xaaZ\\x8ej')]\"": 1,
+                "EXIT_CODE_250": 2,
+                "No matching entries for 'tuple' in encoder registry": 2,
+                "Unsupported type: tuple": 2,
+                "bytearray(b'\\xa4')]\"": 1,
+                "Problem while deploying contract NeverJeet using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 1
+            },
+            "n_fails": 13,
+            "fails": {
+                "DOCKER_TIMEOUT": 8,
+                "exception (UnicodeDecodeError: 'ascii' codec can't decode byte 0xe2 in position 1436: ordinal not in range(128))": 1,
+                "exception (UnicodeDecodeError: 'ascii' codec can't decode byte 0xe2 in position 40498: ordinal not in range(128))": 1,
+                "exception (UnicodeDecodeError: 'ascii' codec can't decode byte 0xe2 in position 3: ordinal not in range(128))": 1,
+                "exception (UnicodeDecodeError: 'ascii' codec can't decode byte 0xc2 in position 1351: ordinal not in range(128))": 1,
+                "exception (UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 50088: ordinal not in range(128))": 1
+            },
+            "infos": {},
+            "avg_duration": 1013.2696108023325,
+            "n_sucessful": 16
+        },
+        "conkas": {
+            "total_duration": 1957.351689338684,
+            "n_analysis": 29,
+            "n_findings": 13,
+            "findings": {
+                "Integer_Overflow": 6,
+                "Integer_Underflow": 3,
+                "Reentrancy": 3,
+                "Time_Manipulation": 1
+            },
+            "n_errors": 23,
+            "errors": {
+                "PHI instruction need arguments but 0 was given": 2,
+                "EXIT_CODE_1": 21
+            },
+            "n_fails": 24,
+            "fails": {
+                "exception (RecursionError: maximum recursion depth exceeded)": 2,
+                "exception (AttributeError: 'NoneType' object has no attribute 'expressionList')": 6,
+                "exception (AttributeError: 'NoneType' object has no attribute 'getText')": 4,
+                "exception (TypeError: object of type 'NoneType' has no len())": 9,
+                "exception (ANTLR runtime and generated code versions disagree: 4.9.2!=4.7.2)": 2,
+                "DOCKER_TIMEOUT": 1
+            },
+            "infos": {},
+            "avg_duration": 150.56551456451416,
+            "n_sucessful": 5
+        },
+        "maian": {
+            "total_duration": 14787.727890968323,
+            "n_analysis": 29,
+            "n_findings": 21,
+            "findings": {
+                "No_Ether_leak_no_send": 6,
+                "No_Ether_lock_Ether_refused": 7,
+                "Not_destructible_no_self_destruct": 7,
+                "Ether_lock": 1
+            },
+            "n_errors": 4,
+            "errors": {
+                "Unknown operation": 3,
+                "Cannot compile the contract": 1
+            },
+            "n_fails": 22,
+            "fails": {
+                "DOCKER_TIMEOUT": 22
+            },
+            "infos": {
+                "analysis incomplete": 1
+            },
+            "avg_duration": 704.1775186175391,
+            "n_sucessful": 7
+        },
+        "mythril-0.23.5": {
+            "total_duration": 10582.144570112228,
+            "n_analysis": 28,
+            "n_findings": 7,
+            "findings": {
+                "Dependence_on_tx_origin": 2,
+                "Dependence_on_predictable_environment_variable": 1,
+                "Exception_State": 1,
+                "External_Call_To_User_Supplied_Address": 1,
+                "Integer_Arithmetic_Bugs": 1,
+                "State_access_after_external_call": 1
+            },
+            "n_errors": 4,
+            "errors": {
+                "Solc experienced a fatal error": 4
+            },
+            "n_fails": 13,
+            "fails": {
+                "DOCKER_TIMEOUT": 13
+            },
+            "infos": {},
+            "avg_duration": 1511.734938587461,
+            "n_sucessful": 15
+        },
+        "oyente": {
+            "total_duration": 476.62920594215393,
+            "n_analysis": 28,
+            "n_findings": 14,
+            "findings": {
+                "Callstack_Depth_Attack_Vulnerability": 1,
+                "Integer_Overflow": 5,
+                "Integer_Underflow": 5,
+                "Timestamp_Dependency": 2,
+                "Transaction_Ordering_Dependence_TOD": 1
+            },
+            "n_errors": 14,
+            "errors": {
+                "Solidity compilation failed": 14
+            },
+            "n_fails": 14,
+            "fails": {
+                "\"exception (RuntimeError: Source map error": 5,
+                "unknown name(SHR) or instr_name(INVALID))\"": 5,
+                "exception (KeyError: '/sb/0x00000000454a11ca3a574738c0aab442b62d5d45.sol:Types')": 1,
+                "exception (KeyError: '/sb/0x0000a0d6a326f045531bac2a83ad35727234a440.sol:AssetLib')": 1,
+                "exception (KeyError: '/sb/0x0000f5d56e61f679c698c4ce3652bd12cb940000.sol:Types')": 1,
+                "exception (KeyError: '/sb/0x0000fee6275dab194ab538a01dd8b18b02b20000.sol:ApeBotV3')": 1
+            },
+            "infos": {
+                "analysis incomplete": 23,
+                "incomplete push instruction": 7
+            },
+            "avg_duration": 34.04494328158243,
+            "n_sucessful": 14
+        },
+        "slither": {
+            "total_duration": 466.46388006210327,
+            "n_analysis": 28,
+            "n_findings": 50,
+            "findings": {
+                "assembly": 3,
+                "external_function": 6,
+                "locked_ether": 2,
+                "naming_convention": 7,
+                "solc_version": 5,
+                "constable_states": 5,
+                "incorrect_equality": 4,
+                "reentrancy_benign": 3,
+                "reentrancy_no_eth": 3,
+                "unused_return": 5,
+                "unused_state": 2,
+                "arbitrary_send": 1,
+                "calls_loop": 1,
+                "constant_function": 1,
+                "low_level_calls": 1,
+                "pragma": 1
+            },
+            "n_errors": 27,
+            "errors": {
+                "EXIT_CODE_255": 20,
+                "EXIT_CODE_19": 1,
+                "EXIT_CODE_84": 1,
+                "EXIT_CODE_26": 1,
+                "EXIT_CODE_53": 1,
+                "EXIT_CODE_27": 1,
+                "EXIT_CODE_43": 1,
+                "EXIT_CODE_34": 1
+            },
+            "n_fails": 24,
+            "fails": {
+                "error parsing results: file could not be opened successfully": 20,
+                "exception (AssertionError)": 4
+            },
+            "infos": {},
+            "avg_duration": 9.329277601242065,
+            "n_sucessful": 4
+        },
+        "solhint": {
+            "total_duration": 491.0144064426422,
+            "n_analysis": 28,
+            "n_findings": 43,
+            "findings": {
+                "indent": 26,
+                "max_line_length": 17
+            },
+            "n_errors": 28,
+            "errors": {
+                "EXIT_CODE_1": 28
+            },
+            "n_fails": 0,
+            "fails": {},
+            "infos": {},
+            "avg_duration": 11.41893968471261,
+            "n_sucessful": 28
+        }
+    },
+    "total_duration": 34840.94930768013,
+    "total_findings": 154,
+    "total_errors": 150,
+    "total_fails": 110,
+    "total_sucessful": 89
+}
