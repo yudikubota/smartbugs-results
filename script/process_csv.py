@@ -1,9 +1,11 @@
 import sys
 import csv
 import json
+import traceback
 
 # get the first arg as the input csv
 INPUT_CSV_FILE = sys.argv[1]
+OUTPUT_JSON_FILE = sys.argv[2]
 CSV_HEADERS = [
     'filename',
     'basename',
@@ -21,11 +23,10 @@ CSV_HEADERS = [
 ]
 SHOULD_PRINT = False
 
+csv.field_size_limit(sys.maxsize)
+
 # results
-n_analysis_by_tool = {}
-total_duration_by_tool = {}
-findings_counter_by_tool = {}
-errors_counter_by_tool = {}
+results_by_tool = {}
 
 # ----------------
 
@@ -34,47 +35,59 @@ def logger(msg):
         print(msg)
 
 def process_row(line):
-    global n_analysis_by_tool, total_duration_by_tool, findings_counter_by_tool, errors_counter_by_tool
+    global results_by_tool
 
     v = {}
     for header, value in zip(CSV_HEADERS, line):
         v[header] = value
-        # print(f"{header}: {value}")
 
     logger(f"processing {v['basename']}...")
 
-    total_duration_by_tool[v['toolid']] = total_duration_by_tool.get(v['toolid'], 0) + float(v['duration'])
-    n_analysis_by_tool[v['toolid']] = n_analysis_by_tool.get(v['toolid'], 0) + 1
+    toolid = v['toolid']
+
+    if (not results_by_tool.get(toolid, None)):
+        results_by_tool[toolid] = {}
+        results_by_tool[toolid]['total_duration'] = 0
+        results_by_tool[toolid]['n_analysis'] = 0
+        results_by_tool[toolid]['n_findings'] = 0
+        results_by_tool[toolid]['findings'] = {}
+        results_by_tool[toolid]['n_errors'] = 0
+        results_by_tool[toolid]['errors'] = {}
+        results_by_tool[toolid]['n_fails'] = 0
+        results_by_tool[toolid]['fails'] = {}
+        results_by_tool[toolid]['infos'] = {}
+
+    results_by_tool[toolid]['total_duration'] += float(v['duration'])
+    results_by_tool[toolid]['n_analysis'] += 1
 
     for finding in v['findings'].split(','):
         finding = finding.strip()
         if finding == '':
             continue
-        if v['toolid'] not in findings_counter_by_tool:
-            findings_counter_by_tool[v['toolid']] = {}
-        if finding not in findings_counter_by_tool[v['toolid']]:
-            findings_counter_by_tool[v['toolid']][finding] = 0
-        findings_counter_by_tool[v['toolid']][finding] += 1
+        results_by_tool[toolid]['n_findings'] += 1
+        results_by_tool[toolid]['findings'][finding] = results_by_tool[toolid]['findings'].get(finding, 0) + 1
+
+    for info in v['infos'].split(','):
+        info = info.strip()
+        if info == '':
+            continue
+        results_by_tool[toolid]['infos'][info] = results_by_tool[toolid]['infos'].get(info, 0) + 1
 
     for error in v['errors'].split(','):
         error = error.strip()
         if error == '':
             continue
-        if v['toolid'] not in errors_counter_by_tool:
-            errors_counter_by_tool[v['toolid']] = {}
-        if error not in errors_counter_by_tool[v['toolid']]:
-            errors_counter_by_tool[v['toolid']][error] = 0
-        errors_counter_by_tool[v['toolid']][error] += 1
+        results_by_tool[toolid]['errors'][error] = results_by_tool[toolid]['errors'].get(error, 0) + 1
+        results_by_tool[toolid]['n_errors'] += 1
 
-    for error in v['fails'].split(','):
-        error = error.strip()
-        if error == '':
+    for fail in v['fails'].split(','):
+        fail = fail.strip()
+        if fail == '':
             continue
-        if v['toolid'] not in errors_counter_by_tool:
-            errors_counter_by_tool[v['toolid']] = {}
-        if error not in errors_counter_by_tool[v['toolid']]:
-            errors_counter_by_tool[v['toolid']][error] = 0
-        errors_counter_by_tool[v['toolid']][error] += 1
+        results_by_tool[toolid]['fails'][fail] = results_by_tool[toolid]['fails'].get(fail, 0) + 1
+        results_by_tool[toolid]['n_fails'] += 1
+
+    # TODO: avaliate if analysis was successful
 
 # read the csv file line by line
 with open(INPUT_CSV_FILE, 'r') as fp:
@@ -84,52 +97,49 @@ with open(INPUT_CSV_FILE, 'r') as fp:
     csvreader.__next__()
 
     # process lines
+    row_counter = 0
     for row in csvreader:
-        process_row(row)
+        try:
+            row_counter += 1
+            print(f"")
+            print(f"Row counter: {row_counter}")
+            process_row(row)
+        except Exception as e:
+            print(f"Error: {e}")
+            traceback.print_tb(e.__traceback__)
+            print(f"Row: {row}")
 
-# average_duration_per_tool
-average_duration_per_tool = {}
+total_duration = 0
+total_findings = 0
+total_errors = 0
+total_fails = 0
+total_sucessful = 0
 
-for tool in n_analysis_by_tool:
-    average_duration_per_tool[tool] = total_duration_by_tool[tool] / n_analysis_by_tool[tool]
+for toolid in results_by_tool:
+    # average_duration_per_tool
+    results_by_tool[toolid]['avg_duration'] = results_by_tool[toolid]['total_duration'] / results_by_tool[toolid]['n_findings']
 
-total_duration = sum(total_duration_by_tool.values())
+    # sucessful
+    results_by_tool[toolid]['n_sucessful'] = results_by_tool[toolid]['n_analysis'] - results_by_tool[toolid]['n_fails']
 
-total_vuln_by_tool = {}
+    # totals
+    total_duration += results_by_tool[toolid]['total_duration']
+    total_findings += results_by_tool[toolid]['n_findings']
+    total_errors += results_by_tool[toolid]['n_errors']
+    total_fails += results_by_tool[toolid]['n_fails']
+    total_sucessful += results_by_tool[toolid]['n_sucessful']
 
-for tool in findings_counter_by_tool:
-    total_vuln_by_tool[tool] = sum(findings_counter_by_tool[tool].values())
-
-total_vuln = sum(total_vuln_by_tool.values())
-
-total_errors_by_tool = {}
-
-for tool in errors_counter_by_tool:
-    total_errors_by_tool[tool] = sum(errors_counter_by_tool[tool].values())
-
-total_errors = sum(total_errors_by_tool.values())
-
-n_sucessful_analysis_by_tool = {}
-
-for tool in n_analysis_by_tool:
-    n_sucessful_analysis_by_tool[tool] = n_analysis_by_tool[tool] - total_errors_by_tool.get(tool, 0)
-
-n_analysis = sum(n_sucessful_analysis_by_tool.values())
 
 logger(f'=== Results ===')
 results = {
-    'n_analysis_by_tool': n_analysis_by_tool,
-    'total_duration_by_tool': total_duration_by_tool,
-    'findings_counter_by_tool': findings_counter_by_tool,
-    'errors_counter_by_tool': errors_counter_by_tool,
+    'results_by_tool': results_by_tool,
     'total_duration': total_duration,
-    'average_duration_per_tool': average_duration_per_tool,
-    'total_vuln_by_tool': total_vuln_by_tool,
-    'total_vuln': total_vuln,
-    'total_errors_by_tool': total_errors_by_tool,
+    'total_findings': total_findings,
     'total_errors': total_errors,
-    'n_sucessful_analysis_by_tool': n_sucessful_analysis_by_tool,
-    'n_analysis': n_analysis,
+    'total_fails': total_fails,
+    'total_sucessful': total_sucessful,
 }
 
-print(json.dumps(results, indent=4))
+with open(OUTPUT_JSON_FILE, 'w') as fp:
+    json.dump(results, fp, indent=4)
+# print(json.dumps(results, indent=4))
