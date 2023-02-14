@@ -22,6 +22,9 @@ CSV_HEADERS = [
     'fails',
 ]
 SHOULD_PRINT = False
+IGNORED_TOOLS = [
+    'solhint'
+]
 
 csv.field_size_limit(sys.maxsize)
 
@@ -45,27 +48,36 @@ def process_row(line):
 
     toolid = v['toolid']
 
+    if (toolid in IGNORED_TOOLS):
+        return
+
     if (not results_by_tool.get(toolid, None)):
         results_by_tool[toolid] = {}
         results_by_tool[toolid]['total_duration'] = 0
         results_by_tool[toolid]['n_analysis'] = 0
         results_by_tool[toolid]['n_findings'] = 0
+        results_by_tool[toolid]['n_sucessful'] = 0
         results_by_tool[toolid]['findings'] = {}
         results_by_tool[toolid]['n_errors'] = 0
         results_by_tool[toolid]['errors'] = {}
         results_by_tool[toolid]['n_fails'] = 0
         results_by_tool[toolid]['fails'] = {}
         results_by_tool[toolid]['infos'] = {}
+        results_by_tool[toolid]['vuln_per_contract'] = {}
 
     results_by_tool[toolid]['total_duration'] += float(v['duration'])
     results_by_tool[toolid]['n_analysis'] += 1
 
+    row_findings = 0
     for finding in v['findings'].split(','):
         finding = finding.strip()
         if finding == '':
             continue
         results_by_tool[toolid]['n_findings'] += 1
         results_by_tool[toolid]['findings'][finding] = results_by_tool[toolid]['findings'].get(finding, 0) + 1
+        row_findings += 1
+
+    results_by_tool[toolid]['vuln_per_contract'][v['basename']] = results_by_tool[toolid]['vuln_per_contract'].get(v['basename'], 0) + row_findings
 
     for info in v['infos'].split(','):
         info = info.strip()
@@ -80,14 +92,16 @@ def process_row(line):
         results_by_tool[toolid]['errors'][error] = results_by_tool[toolid]['errors'].get(error, 0) + 1
         results_by_tool[toolid]['n_errors'] += 1
 
+    row_fails = 0
     for fail in v['fails'].split(','):
         fail = fail.strip()
         if fail == '':
             continue
         results_by_tool[toolid]['fails'][fail] = results_by_tool[toolid]['fails'].get(fail, 0) + 1
         results_by_tool[toolid]['n_fails'] += 1
+        row_fails += 1
 
-    # TODO: avaliate if analysis was successful
+    results_by_tool[toolid]['n_sucessful'] += 1 if row_fails == 0 else 0
 
 # read the csv file line by line
 with open(INPUT_CSV_FILE, 'r') as fp:
@@ -101,26 +115,27 @@ with open(INPUT_CSV_FILE, 'r') as fp:
     for row in csvreader:
         try:
             row_counter += 1
-            print(f"")
-            print(f"Row counter: {row_counter}")
+            if (row_counter % 100 == 0):
+                print(f"")
+                print(f"Row counter: {row_counter}")
             process_row(row)
         except Exception as e:
             print(f"Error: {e}")
             traceback.print_tb(e.__traceback__)
             print(f"Row: {row}")
 
+total_analysis = 0
 total_duration = 0
 total_findings = 0
 total_errors = 0
 total_fails = 0
 total_sucessful = 0
+total_timeouts = 0
+vulns_per_contract = {}
 
 for toolid in results_by_tool:
     # average_duration_per_tool
     results_by_tool[toolid]['avg_duration'] = results_by_tool[toolid]['total_duration'] / results_by_tool[toolid]['n_findings']
-
-    # sucessful
-    results_by_tool[toolid]['n_sucessful'] = results_by_tool[toolid]['n_analysis'] - results_by_tool[toolid]['n_fails']
 
     # totals
     total_duration += results_by_tool[toolid]['total_duration']
@@ -128,7 +143,41 @@ for toolid in results_by_tool:
     total_errors += results_by_tool[toolid]['n_errors']
     total_fails += results_by_tool[toolid]['n_fails']
     total_sucessful += results_by_tool[toolid]['n_sucessful']
+    total_analysis += results_by_tool[toolid]['n_analysis']
 
+    # other data
+    timeouts = results_by_tool[toolid]['fails'].get('DOCKER_TIMEOUT', 0)
+    results_by_tool[toolid]['timeout_percentage'] = timeouts / results_by_tool[toolid]['n_analysis'] * 100
+    total_timeouts += timeouts
+    results_by_tool[toolid]['success_percentage'] = results_by_tool[toolid]['n_sucessful'] / results_by_tool[toolid]['n_analysis'] * 100
+    contracts_with_vuln = 0
+    for k, v in results_by_tool[toolid]['vuln_per_contract'].items():
+        vulns_per_contract[k] = vulns_per_contract.get(k, 0) + v
+        if (v > 0):
+            contracts_with_vuln += 1
+    results_by_tool[toolid]['contracts_with_vuln_percentage'] = contracts_with_vuln / len(results_by_tool[toolid]['vuln_per_contract']) * 100
+
+    # tratar quando deu erro não considerar no % de sucesso/vulnerabilidades
+
+# get percentage of contracts that have at least one vulnerability
+total_contracts_with_vuln = len([k for k, v in vulns_per_contract.items() if v > 0])
+percentage_contracts_with_vuln = total_contracts_with_vuln / len(vulns_per_contract) * 100
+
+timeout_percentage = total_timeouts / total_analysis * 100
+success_percentage = total_sucessful / total_analysis * 100
+
+# clean results
+for toolid in results_by_tool:
+    results_by_tool[toolid]['total_duration'] = round(results_by_tool[toolid]['total_duration'], 2)
+    results_by_tool[toolid]['avg_duration'] = round(results_by_tool[toolid]['avg_duration'], 2)
+    results_by_tool[toolid]['timeout_percentage'] = round(results_by_tool[toolid]['timeout_percentage'], 2)
+    results_by_tool[toolid]['success_percentage'] = round(results_by_tool[toolid]['success_percentage'], 2)
+    results_by_tool[toolid]['contracts_with_vuln_percentage'] = round(results_by_tool[toolid]['contracts_with_vuln_percentage'], 2)
+
+    results_by_tool[toolid]['errors'] = {}
+    results_by_tool[toolid]['fails'] = {}
+    results_by_tool[toolid]['errors'] = {}
+    results_by_tool[toolid]['vuln_per_contract'] = {}
 
 logger(f'=== Results ===')
 results = {
@@ -138,8 +187,27 @@ results = {
     'total_errors': total_errors,
     'total_fails': total_fails,
     'total_sucessful': total_sucessful,
+    'total_analysis': total_analysis,
+    'total_timeouts': total_timeouts,
+    'total_contracts': len(vulns_per_contract),
+    'total_contracts_with_vuln': total_contracts_with_vuln,
+    'percentage_contracts_with_vuln': percentage_contracts_with_vuln,
+    'timeout_percentage': timeout_percentage,
+    'success_percentage': success_percentage,
 }
 
 with open(OUTPUT_JSON_FILE, 'w') as fp:
     json.dump(results, fp, indent=4)
 # print(json.dumps(results, indent=4))
+
+# plot vulnerabilities per contract
+import matplotlib.pyplot as plt
+import numpy as np
+OUTPUT_PLOT_FILE='vuln_per_contract.png'
+# plt.figure(figsize=(20, 10))
+h = plt.hist(vulns_per_contract.values(), bins=max(vulns_per_contract.values()))
+print(h)
+plt.title('Vulnerabilities per contract')
+plt.xlabel('Number of vulnerabilities')
+plt.ylabel('Number of contracts')
+plt.savefig(OUTPUT_PLOT_FILE)

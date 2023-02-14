@@ -1,228 +1,206 @@
 {
     "results_by_tool": {
         "confuzzius": {
-            "total_duration": 6079.617664813995,
-            "n_analysis": 29,
-            "n_findings": 6,
+            "total_duration": 27554.57,
+            "n_analysis": 144,
+            "n_findings": 49,
+            "n_sucessful": 97,
             "findings": {
-                "Block_Dependency": 2,
-                "Integer_Overflow": 1,
-                "Assertion_Failure": 2,
-                "Transaction_Order_Dependency": 1
+                "Block_Dependency": 13,
+                "Integer_Overflow": 7,
+                "Assertion_Failure": 13,
+                "Transaction_Order_Dependency": 5,
+                "Unhandled_Exception": 1,
+                "Reentrancy": 6,
+                "Arbitrary_Memory_Access": 2,
+                "Leaking_Ether": 1,
+                "Locking_Ether": 1
             },
-            "n_errors": 50,
-            "errors": {
-                "EXIT_CODE_255": 4,
-                "No compiler output for: /sb/0x000000000000c1cb11d5c062901f32d06248ce48.sol": 1,
-                "EXIT_CODE_1": 5,
-                "EXIT_CODE_254": 10,
-                "Problem while deploying contract MultiSigWallet using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 1,
-                "No compiler output for: /sb/0x00000000008d4f01d63beee04b849eff60de7517.sol": 1,
-                "Problem while deploying contract Cashier using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 2,
-                "No compiler output for: /sb/0x000000000c07ef1297222d14ad9606342f3b8898.sol": 1,
-                "No compiler output for: /sb/0x00000000454a11ca3a574738c0aab442b62d5d45.sol": 1,
-                "Problem while deploying contract Stealth using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 1,
-                "Problem while deploying contract ERC721 using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 2,
-                "Problem while deploying contract SwapEncryption using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 1,
-                "Validation error: Sender account balance cannot afford txn (ignoring for now)": 1,
-                "Problem while deploying contract AggregatedTokenSwap using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 1,
-                "Problem while deploying contract PayableProxy using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 1,
-                "\"0x2a9b5b88: ['address'": 2,
-                "'tuple'": 2,
-                "'bytes'] -> ['0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef'": 2,
-                "None": 2,
-                "bytearray(b'\\x96\\xcd\\x0b\\xf2\\xd0\\x06\\x9cL\\xb37`\\xddcM\\xf53\\xe0\\x92+\\xa4+V\\nJ\\xf0\\xaarj\\xaaZ\\x8ej')]\"": 1,
-                "EXIT_CODE_250": 2,
-                "No matching entries for 'tuple' in encoder registry": 2,
-                "Unsupported type: tuple": 2,
-                "bytearray(b'\\xa4')]\"": 1,
-                "Problem while deploying contract NeverJeet using account 0xcafebabecafebabecafebabecafebabecafebabe. Error message: b''": 1
-            },
-            "n_fails": 13,
-            "fails": {
-                "DOCKER_TIMEOUT": 8,
-                "exception (UnicodeDecodeError: 'ascii' codec can't decode byte 0xe2 in position 1436: ordinal not in range(128))": 1,
-                "exception (UnicodeDecodeError: 'ascii' codec can't decode byte 0xe2 in position 40498: ordinal not in range(128))": 1,
-                "exception (UnicodeDecodeError: 'ascii' codec can't decode byte 0xe2 in position 3: ordinal not in range(128))": 1,
-                "exception (UnicodeDecodeError: 'ascii' codec can't decode byte 0xc2 in position 1351: ordinal not in range(128))": 1,
-                "exception (UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 50088: ordinal not in range(128))": 1
-            },
+            "n_errors": 235,
+            "errors": {},
+            "n_fails": 48,
+            "fails": {},
             "infos": {},
-            "avg_duration": 1013.2696108023325,
-            "n_sucessful": 16
+            "vuln_per_contract": {},
+            "avg_duration": 562.34,
+            "timeout_percentage": 16.67,
+            "success_percentage": 67.36,
+            "contracts_with_vuln_percentage": 17.36
         },
         "conkas": {
-            "total_duration": 1957.351689338684,
-            "n_analysis": 29,
-            "n_findings": 13,
+            "total_duration": 8008.11,
+            "n_analysis": 143,
+            "n_findings": 77,
+            "n_sucessful": 31,
             "findings": {
-                "Integer_Overflow": 6,
-                "Integer_Underflow": 3,
-                "Reentrancy": 3,
-                "Time_Manipulation": 1
+                "Integer_Overflow": 23,
+                "Integer_Underflow": 15,
+                "Reentrancy": 16,
+                "Time_Manipulation": 12,
+                "Unchecked_Low_Level_Call": 3,
+                "Transaction_Ordering_Dependence": 8
             },
-            "n_errors": 23,
-            "errors": {
-                "PHI instruction need arguments but 0 was given": 2,
-                "EXIT_CODE_1": 21
-            },
-            "n_fails": 24,
-            "fails": {
-                "exception (RecursionError: maximum recursion depth exceeded)": 2,
-                "exception (AttributeError: 'NoneType' object has no attribute 'expressionList')": 6,
-                "exception (AttributeError: 'NoneType' object has no attribute 'getText')": 4,
-                "exception (TypeError: object of type 'NoneType' has no len())": 9,
-                "exception (ANTLR runtime and generated code versions disagree: 4.9.2!=4.7.2)": 2,
-                "DOCKER_TIMEOUT": 1
-            },
+            "n_errors": 106,
+            "errors": {},
+            "n_fails": 115,
+            "fails": {},
             "infos": {},
-            "avg_duration": 150.56551456451416,
-            "n_sucessful": 5
+            "vuln_per_contract": {},
+            "avg_duration": 104.0,
+            "timeout_percentage": 3.5,
+            "success_percentage": 21.68,
+            "contracts_with_vuln_percentage": 20.98
         },
         "maian": {
-            "total_duration": 14787.727890968323,
-            "n_analysis": 29,
-            "n_findings": 21,
+            "total_duration": 71196.69,
+            "n_analysis": 143,
+            "n_findings": 161,
+            "n_sucessful": 50,
             "findings": {
-                "No_Ether_leak_no_send": 6,
-                "No_Ether_lock_Ether_refused": 7,
-                "Not_destructible_no_self_destruct": 7,
-                "Ether_lock": 1
+                "No_Ether_leak_no_send": 50,
+                "No_Ether_lock_Ether_refused": 53,
+                "Not_destructible_no_self_destruct": 53,
+                "Ether_lock": 5
             },
-            "n_errors": 4,
-            "errors": {
-                "Unknown operation": 3,
-                "Cannot compile the contract": 1
-            },
-            "n_fails": 22,
-            "fails": {
-                "DOCKER_TIMEOUT": 22
-            },
+            "n_errors": 24,
+            "errors": {},
+            "n_fails": 93,
+            "fails": {},
             "infos": {
-                "analysis incomplete": 1
+                "analysis incomplete": 6
             },
-            "avg_duration": 704.1775186175391,
-            "n_sucessful": 7
+            "vuln_per_contract": {},
+            "avg_duration": 442.22,
+            "timeout_percentage": 65.03,
+            "success_percentage": 34.97,
+            "contracts_with_vuln_percentage": 37.06
         },
         "mythril-0.23.5": {
-            "total_duration": 10582.144570112228,
-            "n_analysis": 28,
-            "n_findings": 7,
+            "total_duration": 51249.08,
+            "n_analysis": 140,
+            "n_findings": 50,
+            "n_sucessful": 94,
             "findings": {
-                "Dependence_on_tx_origin": 2,
-                "Dependence_on_predictable_environment_variable": 1,
-                "Exception_State": 1,
-                "External_Call_To_User_Supplied_Address": 1,
-                "Integer_Arithmetic_Bugs": 1,
-                "State_access_after_external_call": 1
+                "Dependence_on_tx_origin": 3,
+                "Dependence_on_predictable_environment_variable": 11,
+                "Exception_State": 13,
+                "External_Call_To_User_Supplied_Address": 5,
+                "Integer_Arithmetic_Bugs": 8,
+                "State_access_after_external_call": 3,
+                "Multiple_Calls_in_a_Single_Transaction": 3,
+                "Delegatecall_to_user_supplied_address": 4
             },
-            "n_errors": 4,
-            "errors": {
-                "Solc experienced a fatal error": 4
-            },
-            "n_fails": 13,
-            "fails": {
-                "DOCKER_TIMEOUT": 13
-            },
+            "n_errors": 7,
+            "errors": {},
+            "n_fails": 46,
+            "fails": {},
             "infos": {},
-            "avg_duration": 1511.734938587461,
-            "n_sucessful": 15
+            "vuln_per_contract": {},
+            "avg_duration": 1024.98,
+            "timeout_percentage": 32.86,
+            "success_percentage": 67.14,
+            "contracts_with_vuln_percentage": 20.0
         },
         "oyente": {
-            "total_duration": 476.62920594215393,
-            "n_analysis": 28,
-            "n_findings": 14,
+            "total_duration": 2583.55,
+            "n_analysis": 143,
+            "n_findings": 63,
+            "n_sucessful": 119,
             "findings": {
-                "Callstack_Depth_Attack_Vulnerability": 1,
-                "Integer_Overflow": 5,
-                "Integer_Underflow": 5,
-                "Timestamp_Dependency": 2,
-                "Transaction_Ordering_Dependence_TOD": 1
+                "Callstack_Depth_Attack_Vulnerability": 4,
+                "Integer_Overflow": 28,
+                "Integer_Underflow": 19,
+                "Timestamp_Dependency": 4,
+                "Transaction_Ordering_Dependence_TOD": 8
             },
-            "n_errors": 14,
-            "errors": {
-                "Solidity compilation failed": 14
-            },
-            "n_fails": 14,
-            "fails": {
-                "\"exception (RuntimeError: Source map error": 5,
-                "unknown name(SHR) or instr_name(INVALID))\"": 5,
-                "exception (KeyError: '/sb/0x00000000454a11ca3a574738c0aab442b62d5d45.sol:Types')": 1,
-                "exception (KeyError: '/sb/0x0000a0d6a326f045531bac2a83ad35727234a440.sol:AssetLib')": 1,
-                "exception (KeyError: '/sb/0x0000f5d56e61f679c698c4ce3652bd12cb940000.sol:Types')": 1,
-                "exception (KeyError: '/sb/0x0000fee6275dab194ab538a01dd8b18b02b20000.sol:ApeBotV3')": 1
-            },
+            "n_errors": 81,
+            "errors": {},
+            "n_fails": 37,
+            "fails": {},
             "infos": {
-                "analysis incomplete": 23,
-                "incomplete push instruction": 7
+                "analysis incomplete": 105,
+                "incomplete push instruction": 20
             },
-            "avg_duration": 34.04494328158243,
-            "n_sucessful": 14
+            "vuln_per_contract": {},
+            "avg_duration": 41.01,
+            "timeout_percentage": 0.0,
+            "success_percentage": 83.22,
+            "contracts_with_vuln_percentage": 22.38
         },
         "slither": {
-            "total_duration": 466.46388006210327,
-            "n_analysis": 28,
-            "n_findings": 50,
+            "total_duration": 1935.19,
+            "n_analysis": 143,
+            "n_findings": 281,
+            "n_sucessful": 48,
             "findings": {
-                "assembly": 3,
-                "external_function": 6,
-                "locked_ether": 2,
-                "naming_convention": 7,
-                "solc_version": 5,
-                "constable_states": 5,
-                "incorrect_equality": 4,
-                "reentrancy_benign": 3,
-                "reentrancy_no_eth": 3,
-                "unused_return": 5,
-                "unused_state": 2,
-                "arbitrary_send": 1,
-                "calls_loop": 1,
-                "constant_function": 1,
-                "low_level_calls": 1,
-                "pragma": 1
+                "assembly": 14,
+                "external_function": 39,
+                "locked_ether": 6,
+                "naming_convention": 43,
+                "solc_version": 34,
+                "constable_states": 24,
+                "incorrect_equality": 8,
+                "reentrancy_benign": 14,
+                "reentrancy_no_eth": 9,
+                "unused_return": 12,
+                "unused_state": 6,
+                "arbitrary_send": 5,
+                "calls_loop": 5,
+                "constant_function": 9,
+                "low_level_calls": 8,
+                "pragma": 3,
+                "controlled_delegatecall": 1,
+                "shadowing_local": 8,
+                "deprecated_standards": 5,
+                "shadowing_builtin": 2,
+                "timestamp": 6,
+                "erc20_interface": 6,
+                "uninitialized_state": 3,
+                "uninitialized_local": 8,
+                "reentrancy_eth": 2,
+                "erc20_indexed": 1
             },
-            "n_errors": 27,
-            "errors": {
-                "EXIT_CODE_255": 20,
-                "EXIT_CODE_19": 1,
-                "EXIT_CODE_84": 1,
-                "EXIT_CODE_26": 1,
-                "EXIT_CODE_53": 1,
-                "EXIT_CODE_27": 1,
-                "EXIT_CODE_43": 1,
-                "EXIT_CODE_34": 1
-            },
-            "n_fails": 24,
-            "fails": {
-                "error parsing results: file could not be opened successfully": 20,
-                "exception (AssertionError)": 4
-            },
+            "n_errors": 137,
+            "errors": {},
+            "n_fails": 106,
+            "fails": {},
             "infos": {},
-            "avg_duration": 9.329277601242065,
-            "n_sucessful": 4
+            "vuln_per_contract": {},
+            "avg_duration": 6.89,
+            "timeout_percentage": 0.0,
+            "success_percentage": 33.57,
+            "contracts_with_vuln_percentage": 30.77
         },
         "solhint": {
-            "total_duration": 491.0144064426422,
-            "n_analysis": 28,
-            "n_findings": 43,
+            "total_duration": 1933.51,
+            "n_analysis": 143,
+            "n_findings": 240,
+            "n_sucessful": 143,
             "findings": {
-                "indent": 26,
-                "max_line_length": 17
+                "indent": 131,
+                "max_line_length": 109
             },
-            "n_errors": 28,
-            "errors": {
-                "EXIT_CODE_1": 28
-            },
+            "n_errors": 135,
+            "errors": {},
             "n_fails": 0,
             "fails": {},
             "infos": {},
-            "avg_duration": 11.41893968471261,
-            "n_sucessful": 28
+            "vuln_per_contract": {},
+            "avg_duration": 8.06,
+            "timeout_percentage": 0.0,
+            "success_percentage": 100.0,
+            "contracts_with_vuln_percentage": 94.41
         }
     },
-    "total_duration": 34840.94930768013,
-    "total_findings": 154,
-    "total_errors": 150,
-    "total_fails": 110,
-    "total_sucessful": 89
+    "total_duration": 164460.69834923744,
+    "total_findings": 921,
+    "total_errors": 725,
+    "total_fails": 445,
+    "total_sucessful": 582,
+    "total_analysis": 999,
+    "total_timeouts": 168,
+    "total_contracts_with_vuln": 144,
+    "percentage_contracts_with_vuln": 14.414414414414415,
+    "timeout_percentage": 16.816816816816818,
+    "success_percentage": 58.25825825825825
 }
