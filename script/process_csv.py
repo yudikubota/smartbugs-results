@@ -2,10 +2,15 @@ import sys
 import csv
 import json
 import traceback
+import os
 
 # get the first arg as the input csv
+ROOT = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+# INPUT_CSV_FILE = os.path.join(ROOT, 'first-run.csv')
+# OUTPUT_JSON_FILE = os.path.join(ROOT, 'metadata', 'first-run.json')
 INPUT_CSV_FILE = sys.argv[1]
 OUTPUT_JSON_FILE = sys.argv[2]
+IGNORED_TOOLS = (sys.argv[3] if len(sys.argv) > 3 else '').split(',')
 CSV_HEADERS = [
     'filename',
     'basename',
@@ -22,9 +27,6 @@ CSV_HEADERS = [
     'fails',
 ]
 SHOULD_PRINT = False
-IGNORED_TOOLS = [
-    'solhint'
-]
 
 csv.field_size_limit(sys.maxsize)
 
@@ -32,6 +34,31 @@ csv.field_size_limit(sys.maxsize)
 results_by_tool = {}
 
 # ----------------
+
+vulnerability_mapping = {}
+with open(os.path.join(ROOT, 'metadata', 'vulnerabilities_mapping.csv')) as fd:
+    header = fd.readline().strip().split(',')
+    for line in fd:
+        v = line.strip().split(',')
+        index = -1
+        if 'TRUE' in v:
+            index = v.index('TRUE')
+        elif 'MAYBE' in v:
+            index = v.index('MAYBE')
+        if index > -1:
+            vulnerability_mapping[v[1]] = header[index]
+
+categories = sorted(list(set(vulnerability_mapping.values())))
+categories.remove('Ignore')
+categories.remove('Other')
+categories.append('Other')
+
+print('vulnerability_mapping', vulnerability_mapping)
+print('categories', categories)
+
+# ----------------
+
+findings_list = []
 
 def logger(msg):
     if SHOULD_PRINT:
@@ -58,6 +85,7 @@ def process_row(line):
         results_by_tool[toolid]['n_findings'] = 0
         results_by_tool[toolid]['n_sucessful'] = 0
         results_by_tool[toolid]['findings'] = {}
+        results_by_tool[toolid]['vuln_per_category'] = {}
         results_by_tool[toolid]['n_errors'] = 0
         results_by_tool[toolid]['errors'] = {}
         results_by_tool[toolid]['n_fails'] = 0
@@ -76,6 +104,14 @@ def process_row(line):
         results_by_tool[toolid]['n_findings'] += 1
         results_by_tool[toolid]['findings'][finding] = results_by_tool[toolid]['findings'].get(finding, 0) + 1
         row_findings += 1
+
+        # vuln per category
+        category = vulnerability_mapping.get(finding, 'Other')
+        results_by_tool[toolid]['vuln_per_category'][category] = results_by_tool[toolid]['vuln_per_category'].get(category, 0) + 1
+
+        fitem = f'{toolid},{finding}'
+        if (fitem not in findings_list):
+            findings_list.append(fitem)
 
     results_by_tool[toolid]['vuln_per_contract'][v['basename']] = results_by_tool[toolid]['vuln_per_contract'].get(v['basename'], 0) + row_findings
 
@@ -115,7 +151,7 @@ with open(INPUT_CSV_FILE, 'r') as fp:
     for row in csvreader:
         try:
             row_counter += 1
-            if (row_counter % 100 == 0):
+            if (row_counter % 10000 == 0):
                 print(f"")
                 print(f"Row counter: {row_counter}")
             process_row(row)
@@ -132,6 +168,7 @@ total_fails = 0
 total_sucessful = 0
 total_timeouts = 0
 vulns_per_contract = {}
+vulns_per_category = {}
 
 for toolid in results_by_tool:
     # average_duration_per_tool
@@ -157,6 +194,10 @@ for toolid in results_by_tool:
             contracts_with_vuln += 1
     results_by_tool[toolid]['contracts_with_vuln_percentage'] = contracts_with_vuln / len(results_by_tool[toolid]['vuln_per_contract']) * 100
 
+    # vuln per category
+    for k, v in results_by_tool[toolid]['vuln_per_category'].items():
+        vulns_per_category[k] = vulns_per_category.get(k, 0) + v
+
     # tratar quando deu erro não considerar no % de sucesso/vulnerabilidades
 
 # get percentage of contracts that have at least one vulnerability
@@ -176,7 +217,6 @@ for toolid in results_by_tool:
 
     results_by_tool[toolid]['errors'] = {}
     results_by_tool[toolid]['fails'] = {}
-    results_by_tool[toolid]['errors'] = {}
     results_by_tool[toolid]['vuln_per_contract'] = {}
 
 logger(f'=== Results ===')
@@ -194,6 +234,8 @@ results = {
     'percentage_contracts_with_vuln': percentage_contracts_with_vuln,
     'timeout_percentage': timeout_percentage,
     'success_percentage': success_percentage,
+    'vulns_per_category': vulns_per_category,
+    'findings_list': findings_list,
 }
 
 with open(OUTPUT_JSON_FILE, 'w') as fp:
@@ -203,11 +245,10 @@ with open(OUTPUT_JSON_FILE, 'w') as fp:
 # plot vulnerabilities per contract
 import matplotlib.pyplot as plt
 import numpy as np
-OUTPUT_PLOT_FILE='vuln_per_contract.png'
+OUTPUT_PLOT_FILE=OUTPUT_JSON_FILE.replace('.json', '.png')
 # plt.figure(figsize=(20, 10))
 h = plt.hist(vulns_per_contract.values(), bins=max(vulns_per_contract.values()))
-print(h)
-plt.title('Vulnerabilities per contract')
-plt.xlabel('Number of vulnerabilities')
-plt.ylabel('Number of contracts')
+plt.title('Vulnerabilidades por contrato')
+plt.xlabel('Número de vulnerabilidades')
+plt.ylabel('Número de contratos')
 plt.savefig(OUTPUT_PLOT_FILE)

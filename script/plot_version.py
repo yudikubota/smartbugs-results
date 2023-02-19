@@ -87,5 +87,5 @@ print('5 most common', list(dist.items())[:5])
 ax2.bar(range(len(dist)), dist.values(), align='center')
 # ax2.xticks(range(len(dist)), dist.keys(), rotation=90)
 
-fig.savefig('plot_version.png')
+fig.savefig('../metadata/plot_version.png')
 
