@@ -19,7 +19,14 @@
                 "Unsafe_Delegatecall": 2
             },
             "vuln_per_category": {
-                "Other": 6666
+                "Bad Randomness": 1372,
+                "Arithmetic": 1313,
+                "Unknown Unknowns": 2376,
+                "Front Running": 883,
+                "Unchecked Low Level Calls": 424,
+                "Reentrancy": 283,
+                "Denial of Services": 13,
+                "Access Control": 2
             },
             "n_errors": 64838,
             "errors": {},
@@ -46,7 +53,11 @@
                 "Transaction_Ordering_Dependence": 929
             },
             "vuln_per_category": {
-                "Other": 10047
+                "Arithmetic": 4555,
+                "Reentrancy": 2945,
+                "Time Manipulation": 1323,
+                "Unchecked Low Level Calls": 295,
+                "Front Running": 929
             },
             "n_errors": 21399,
             "errors": {},
@@ -76,7 +87,8 @@
                 "Destructible": 2
             },
             "vuln_per_category": {
-                "Other": 54121
+                "Unknown Unknowns": 51834,
+                "Access Control": 2287
             },
             "n_errors": 10684,
             "errors": {},
@@ -113,7 +125,13 @@
                 "Write_to_an_arbitrary_storage_location": 4
             },
             "vuln_per_category": {
-                "Other": 7222
+                "Access Control": 408,
+                "Time Manipulation": 1537,
+                "Unknown Unknowns": 1813,
+                "Reentrancy": 1551,
+                "Arithmetic": 1115,
+                "Denial of Services": 674,
+                "Unchecked Low Level Calls": 124
             },
             "n_errors": 2033,
             "errors": {},
@@ -143,7 +161,12 @@
                 "Parity_Multisig_Bug_2": 1
             },
             "vuln_per_category": {
-                "Other": 9154
+                "Denial of Services": 288,
+                "Arithmetic": 7188,
+                "Time Manipulation": 354,
+                "Front Running": 1207,
+                "Reentrancy": 116,
+                "Unknown Unknowns": 1
             },
             "n_errors": 17532,
             "errors": {},
@@ -198,10 +221,12 @@
                 "uninitialized_storage": 13
             },
             "vuln_per_category": {
-                "Ignore": 1607,
-                "Other": 37602,
-                "time_manipulation": 708,
-                "access_control": 33
+                "Unknown Unknowns": 31996,
+                "Access Control": 1504,
+                "Reentrancy": 3959,
+                "Denial of Services": 788,
+                "Unchecked Low Level Calls": 995,
+                "Time Manipulation": 708
             },
             "n_errors": 24441,
             "errors": {},
@@ -224,8 +249,7 @@
                 "max_line_length": 23193
             },
             "vuln_per_category": {
-                "Ignore": 25093,
-                "Other": 23193
+                "Unknown Unknowns": 48286
             },
             "n_errors": 25923,
             "errors": {},
@@ -252,10 +276,15 @@
     "timeout_percentage": 12.803733795039172,
     "success_percentage": 61.23499142367067,
     "vulns_per_category": {
-        "Other": 148005,
-        "Ignore": 26700,
-        "time_manipulation": 708,
-        "access_control": 33
+        "Bad Randomness": 1372,
+        "Arithmetic": 14171,
+        "Unknown Unknowns": 136306,
+        "Front Running": 3019,
+        "Unchecked Low Level Calls": 1838,
+        "Reentrancy": 8854,
+        "Denial of Services": 1763,
+        "Access Control": 4201,
+        "Time Manipulation": 3922
     },
     "findings_list": [
         "conkas,Integer_Overflow",

@@ -35,26 +35,34 @@ results_by_tool = {}
 
 # ----------------
 
+with open(os.path.join(ROOT, 'metadata', 'swc_to_dasp.json')) as fd:
+    swc_to_dasp = json.load(fd)
+
+dasp_mapping = {}
+with open(os.path.join(ROOT, 'metadata', 'dasp.json')) as fd:
+    dasp_mapping = json.load(fd)
+
+VULN_CSV_HEADERS = ['tool', 'vuln', 'swc', 'dasp', 'ignore', 'severity']
 vulnerability_mapping = {}
-with open(os.path.join(ROOT, 'metadata', 'vulnerabilities_mapping.csv')) as fd:
-    header = fd.readline().strip().split(',')
-    for line in fd:
-        v = line.strip().split(',')
-        index = -1
-        if 'TRUE' in v:
-            index = v.index('TRUE')
-        elif 'MAYBE' in v:
-            index = v.index('MAYBE')
-        if index > -1:
-            vulnerability_mapping[v[1]] = header[index]
+with open(os.path.join(ROOT, 'metadata', 'vulnerabilities_mapping_new.csv')) as fd:
+    csvreader = csv.reader(fd)
 
-categories = sorted(list(set(vulnerability_mapping.values())))
-categories.remove('Ignore')
-categories.remove('Other')
-categories.append('Other')
+    # skip the header
+    csvreader.__next__()
 
+    # process lines
+    for row in csvreader:
+        v = {}
+        for header, value in zip(VULN_CSV_HEADERS, row):
+            v[header] = value
+
+        if (v['ignore'] == 'true'):
+            continue
+
+        vulnerability_mapping[v['vuln']] = str(v['dasp'] if v['dasp'] != '' else swc_to_dasp[v['swc']] if v['swc'] != '' else 'unknown')
+
+print('dasp_mapping', dasp_mapping)
 print('vulnerability_mapping', vulnerability_mapping)
-print('categories', categories)
 
 # ----------------
 
@@ -106,7 +114,7 @@ def process_row(line):
         row_findings += 1
 
         # vuln per category
-        category = vulnerability_mapping.get(finding, 'Other')
+        category = dasp_mapping[vulnerability_mapping.get(finding, '10')]
         results_by_tool[toolid]['vuln_per_category'][category] = results_by_tool[toolid]['vuln_per_category'].get(category, 0) + 1
 
         fitem = f'{toolid},{finding}'

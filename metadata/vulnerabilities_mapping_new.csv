@@ -1,5 +1,5 @@
 Tools,Vulnerability name,swc,dasp,ignore,severity
-confuzzius,Arbitrary_Memory_Access,124,,,H
+confuzzius,Arbitrary_Memory_Access,124,10,,H
 confuzzius,Assertion_Failure,110,,,M
 confuzzius,Block_Dependency,120,,,L
 confuzzius,Integer_Overflow,101,,,H
@@ -26,7 +26,7 @@ maian,No_Ether_leak_no_send,,,true,I
 maian,No_Ether_lock_Ether_refused,,,true,I
 maian,Not_destructible_no_self_destruct,,,true,I
 mythril-0.23.5,Delegatecall_to_user_supplied_address,112,,,
-mythril-0.23.5,Dependence_on_predictable_environment_variable,120/116,,,
+mythril-0.23.5,Dependence_on_predictable_environment_variable,116,,,
 mythril-0.23.5,Dependence_on_tx_origin,115,,,
 mythril-0.23.5,Exception_State,110,,,
 mythril-0.23.5,External_Call_To_User_Supplied_Address,107,,,

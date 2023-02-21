@@ -1,18 +1,40 @@
 import json
+import datetime
 
 with open('../metadata/first-run.json') as fp:
     data = json.load(fp)
 
-print('Ferramenta & Tempo de execução total & Tempo médio \\\\')
+print('\\hline')
+print('# & Ferramentas & Tempo médio & Total \\\\')
 print('\\hline')
 
+i = 0
 for toolid in data['results_by_tool']:
     tooldata = data['results_by_tool'][toolid]
-    total_duration = f"{round(tooldata['total_duration'] / 60 / 60, 0)} h"
-    avg_duration = f"{round(tooldata['avg_duration'] / 60, 0)} min"
+    total_duration = datetime.timedelta(seconds=int(tooldata['total_duration']))
+    avg_duration = datetime.timedelta(seconds=int(tooldata['avg_duration']))
+    print(i, end=' & ')
     print(toolid, end=' & ')
-    print(total_duration, end=' & ')
-    print(avg_duration, end=' ')
+    print(avg_duration, end=' & ')
+    print(total_duration, end=' ')
     print('\\\\')
+    i += 1
 
 print('\\hline')
+print('')
+print('\\hline')
+
+print('')
+print('')
+
+# print('Ferramenta & Tempo de execução total & Tempo médio \\\\')
+# print('\\hline')
+# i = 0
+# for toolid in data['results_by_tool']:
+#     tooldata = data['results_by_tool'][toolid]
+#     vulns = tooldata['vulns_per_category']
+# i += 1
+
+#     print('\\\\')
+
+# print('\\hline')
