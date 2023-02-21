@@ -9,7 +9,7 @@
 - **Detected vulnerabilities**
     - Total number of vulnerabilities [OK]
     - Total number of vulnerabilities by tool [OK]
-    - Total number of vulnerabilities by category
+    - Total number of vulnerabilities by category <-
 
 - **Plots**
     - Number of vulnerabilities over time
@@ -17,5 +17,5 @@
     - Number of different tools that detect the same vulnerability
 
 - **research**
-    - % of contracts that have vulnerabilities <-
+    - % of contracts that have vulnerabilities [OK]
     - accuracy vs execution time

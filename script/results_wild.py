@@ -2,6 +2,7 @@ import os
 import json
 import re
 import sys
+import csv
 from collections import defaultdict
 from datetime import timedelta
 
@@ -9,7 +10,7 @@ ROOT = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 TOOLS = ['mythril', 'slither', 'oyente', 'osiris', 'smartcheck', 'maian', 'securify', 'honeybadger']
 # TOOLS = ['mythril', 'slither', 'oyente', 'osiris', 'smartcheck', 'manticore', 'maian', 'securify', 'honeybadger']
 # get the first argv
-VULNERABILITIES_FILE = sys.argv[1]
+# VULNERABILITIES_FILE = sys.argv[1]
 
 output_name = 'first_run'
 vulnerability_stat = defaultdict(int)
@@ -23,17 +24,23 @@ contract_vulnerabilities = defaultdict(set)
 
 vulnerability_mapping = {}
 
-with open(os.path.join(ROOT, 'metadata', 'vulnerabilities_mapping.csv')) as fd:
-    header = fd.readline().strip().split(',')
-    for line in fd:
-        v = line.strip().split(',')
-        index = -1
-        if 'TRUE' in v:
-            index = v.index('TRUE')
-        elif 'MAYBE' in v:
-            index = v.index('MAYBE')
-        if index > -1:
-            vulnerability_mapping[v[1]] = header[index]
+CSV_HEADERS = ['tool', 'vuln', 'swc', 'dasp', 'ignore', 'severity']
+with open(os.path.join(ROOT, 'metadata', 'vulnerabilities_mapping_new.csv')) as fd:
+    csvreader = csv.reader(fd)
+
+    # skip the header
+    csvreader.__next__()
+
+    # process lines
+    for row in csvreader:
+        v = {}
+        for header, value in zip(CSV_HEADERS, row):
+            v[header] = value
+
+        if (v['ignore'] is 'true'):
+            continue
+
+        vulnerability_mapping[v['vuln']] = v['dasp']
 
 categories = sorted(list(set(vulnerability_mapping.values())))
 categories.remove('Ignore')
