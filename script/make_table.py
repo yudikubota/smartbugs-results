@@ -21,7 +21,10 @@ for toolid in data['results_by_tool']:
     i += 1
 
 print('\\hline')
-print('')
+total_avg_duration = str(datetime.timedelta(seconds=int(data['total_avg_duration'])))
+total_duration = str(datetime.timedelta(seconds=int(data['total_duration'])))
+print('\multicolumn{2}{l}{Total}', end=' & ')
+print(f'{total_avg_duration} & {total_duration} \\\\')
 print('\\hline')
 
 print('')

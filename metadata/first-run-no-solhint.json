@@ -19,7 +19,14 @@
                 "Unsafe_Delegatecall": 2
             },
             "vuln_per_category": {
-                "Other": 6666
+                "Bad Randomness": 1372,
+                "Arithmetic": 1313,
+                "Unknown Unknowns": 2376,
+                "Front Running": 883,
+                "Unchecked Low Level Calls": 424,
+                "Reentrancy": 283,
+                "Denial of Services": 13,
+                "Access Control": 2
             },
             "n_errors": 64838,
             "errors": {},
@@ -46,7 +53,11 @@
                 "Transaction_Ordering_Dependence": 929
             },
             "vuln_per_category": {
-                "Other": 10047
+                "Arithmetic": 4555,
+                "Reentrancy": 2945,
+                "Time Manipulation": 1323,
+                "Unchecked Low Level Calls": 295,
+                "Front Running": 929
             },
             "n_errors": 21399,
             "errors": {},
@@ -76,7 +87,8 @@
                 "Destructible": 2
             },
             "vuln_per_category": {
-                "Other": 54121
+                "Unknown Unknowns": 51834,
+                "Access Control": 2287
             },
             "n_errors": 10684,
             "errors": {},
@@ -113,7 +125,13 @@
                 "Write_to_an_arbitrary_storage_location": 4
             },
             "vuln_per_category": {
-                "Other": 7222
+                "Access Control": 408,
+                "Time Manipulation": 1537,
+                "Unknown Unknowns": 1813,
+                "Reentrancy": 1551,
+                "Arithmetic": 1115,
+                "Denial of Services": 674,
+                "Unchecked Low Level Calls": 124
             },
             "n_errors": 2033,
             "errors": {},
@@ -143,7 +161,12 @@
                 "Parity_Multisig_Bug_2": 1
             },
             "vuln_per_category": {
-                "Other": 9154
+                "Denial of Services": 288,
+                "Arithmetic": 7188,
+                "Time Manipulation": 354,
+                "Front Running": 1207,
+                "Reentrancy": 116,
+                "Unknown Unknowns": 1
             },
             "n_errors": 17532,
             "errors": {},
@@ -198,10 +221,12 @@
                 "uninitialized_storage": 13
             },
             "vuln_per_category": {
-                "Ignore": 1607,
-                "Other": 37602,
-                "time_manipulation": 708,
-                "access_control": 33
+                "Unknown Unknowns": 31996,
+                "Access Control": 1504,
+                "Reentrancy": 3959,
+                "Denial of Services": 788,
+                "Unchecked Low Level Calls": 995,
+                "Time Manipulation": 708
             },
             "n_errors": 24441,
             "errors": {},
@@ -226,5 +251,96 @@
     "total_contracts_with_vuln": 20416,
     "percentage_contracts_with_vuln": 76.55330158611122,
     "timeout_percentage": 14.944144596460399,
-    "success_percentage": 54.75649554411949
+    "success_percentage": 54.75649554411949,
+    "vulns_per_category": {
+        "Bad Randomness": 1372,
+        "Arithmetic": 14171,
+        "Unknown Unknowns": 88020,
+        "Front Running": 3019,
+        "Unchecked Low Level Calls": 1838,
+        "Reentrancy": 8854,
+        "Denial of Services": 1763,
+        "Access Control": 4201,
+        "Time Manipulation": 3922
+    },
+    "findings_list": [
+        "conkas,Integer_Overflow",
+        "maian,No_Ether_leak_no_send",
+        "maian,No_Ether_lock_Ether_refused",
+        "maian,Not_destructible_no_self_destruct",
+        "mythril-0.23.5,Dependence_on_tx_origin",
+        "conkas,Integer_Underflow",
+        "oyente,Callstack_Depth_Attack_Vulnerability",
+        "oyente,Integer_Overflow",
+        "oyente,Integer_Underflow",
+        "slither,assembly",
+        "slither,external_function",
+        "slither,locked_ether",
+        "slither,naming_convention",
+        "slither,solc_version",
+        "confuzzius,Block_Dependency",
+        "conkas,Reentrancy",
+        "conkas,Time_Manipulation",
+        "oyente,Timestamp_Dependency",
+        "oyente,Transaction_Ordering_Dependence_TOD",
+        "slither,constable_states",
+        "slither,incorrect_equality",
+        "slither,reentrancy_benign",
+        "slither,reentrancy_no_eth",
+        "slither,unused_return",
+        "slither,unused_state",
+        "maian,Ether_lock",
+        "confuzzius,Integer_Overflow",
+        "confuzzius,Assertion_Failure",
+        "mythril-0.23.5,Dependence_on_predictable_environment_variable",
+        "mythril-0.23.5,Exception_State",
+        "mythril-0.23.5,External_Call_To_User_Supplied_Address",
+        "mythril-0.23.5,Integer_Arithmetic_Bugs",
+        "mythril-0.23.5,State_access_after_external_call",
+        "confuzzius,Transaction_Order_Dependency",
+        "slither,arbitrary_send",
+        "slither,calls_loop",
+        "slither,constant_function",
+        "slither,low_level_calls",
+        "slither,pragma",
+        "confuzzius,Unhandled_Exception",
+        "conkas,Unchecked_Low_Level_Call",
+        "mythril-0.23.5,Multiple_Calls_in_a_Single_Transaction",
+        "slither,controlled_delegatecall",
+        "slither,shadowing_local",
+        "confuzzius,Reentrancy",
+        "slither,deprecated_standards",
+        "slither,shadowing_builtin",
+        "conkas,Transaction_Ordering_Dependence",
+        "slither,timestamp",
+        "mythril-0.23.5,Delegatecall_to_user_supplied_address",
+        "slither,erc20_interface",
+        "slither,uninitialized_state",
+        "slither,uninitialized_local",
+        "slither,reentrancy_eth",
+        "confuzzius,Arbitrary_Memory_Access",
+        "slither,erc20_indexed",
+        "confuzzius,Leaking_Ether",
+        "confuzzius,Locking_Ether",
+        "oyente,Re_Entrancy_Vulnerability",
+        "slither,suicidal",
+        "slither,shadowing_abstract",
+        "mythril-0.23.5,Unchecked_return_value_from_external_call",
+        "mythril-0.23.5,Unprotected_Selfdestruct",
+        "slither,shadowing_state",
+        "mythril-0.23.5,Unprotected_Ether_Withdrawal",
+        "maian,Ether_leak_verified",
+        "maian,Ether_leak",
+        "slither,tx_origin",
+        "mythril-0.23.5,Jump_to_an_arbitrary_instruction",
+        "maian,Ether_lock_Ether_accepted_without_send",
+        "confuzzius,Unprotected_Selfdestruct",
+        "slither,uninitialized_storage",
+        "confuzzius,Unsafe_Delegatecall",
+        "mythril-0.23.5,Write_to_an_arbitrary_storage_location",
+        "oyente,Parity_Multisig_Bug_2",
+        "maian,Destructible_verified",
+        "maian,Destructible"
+    ],
+    "total_avg_duration": 178.91338816249896
 }

@@ -215,6 +215,8 @@ percentage_contracts_with_vuln = total_contracts_with_vuln / len(vulns_per_contr
 timeout_percentage = total_timeouts / total_analysis * 100
 success_percentage = total_sucessful / total_analysis * 100
 
+total_avg_duration = total_duration / total_analysis
+
 # clean results
 for toolid in results_by_tool:
     results_by_tool[toolid]['total_duration'] = round(results_by_tool[toolid]['total_duration'], 2)
@@ -244,6 +246,7 @@ results = {
     'success_percentage': success_percentage,
     'vulns_per_category': vulns_per_category,
     'findings_list': findings_list,
+    'total_avg_duration': total_avg_duration,
 }
 
 with open(OUTPUT_JSON_FILE, 'w') as fp:
