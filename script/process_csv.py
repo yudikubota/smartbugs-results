@@ -180,7 +180,7 @@ vulns_per_category = {}
 
 for toolid in results_by_tool:
     # average_duration_per_tool
-    results_by_tool[toolid]['avg_duration'] = results_by_tool[toolid]['total_duration'] / results_by_tool[toolid]['n_findings']
+    results_by_tool[toolid]['avg_duration'] = results_by_tool[toolid]['total_duration'] / results_by_tool[toolid]['n_analysis']
 
     # totals
     total_duration += results_by_tool[toolid]['total_duration']
@@ -254,12 +254,12 @@ with open(OUTPUT_JSON_FILE, 'w') as fp:
 # print(json.dumps(results, indent=4))
 
 # plot vulnerabilities per contract
-import matplotlib.pyplot as plt
-import numpy as np
-OUTPUT_PLOT_FILE=OUTPUT_JSON_FILE.replace('.json', '.png')
-# plt.figure(figsize=(20, 10))
-h = plt.hist(vulns_per_contract.values(), bins=max(vulns_per_contract.values()))
-plt.title('Vulnerabilidades por contrato')
-plt.xlabel('Número de vulnerabilidades')
-plt.ylabel('Número de contratos')
-plt.savefig(OUTPUT_PLOT_FILE)
+# import matplotlib.pyplot as plt
+# import numpy as np
+# OUTPUT_PLOT_FILE=OUTPUT_JSON_FILE.replace('.json', '.png')
+# # plt.figure(figsize=(20, 10))
+# h = plt.hist(vulns_per_contract.values(), bins=max(vulns_per_contract.values()))
+# plt.title('Vulnerabilidades por contrato')
+# plt.xlabel('Número de vulnerabilidades')
+# plt.ylabel('Número de contratos')
+# plt.savefig(OUTPUT_PLOT_FILE)

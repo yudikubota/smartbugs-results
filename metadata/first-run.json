@@ -34,7 +34,7 @@
             "fails": {},
             "infos": {},
             "vuln_per_contract": {},
-            "avg_duration": 805.64,
+            "avg_duration": 201.65,
             "timeout_percentage": 19.03,
             "success_percentage": 65.06,
             "contracts_with_vuln_percentage": 13.45
@@ -65,7 +65,7 @@
             "fails": {},
             "infos": {},
             "vuln_per_contract": {},
-            "avg_duration": 115.47,
+            "avg_duration": 43.56,
             "timeout_percentage": 1.89,
             "success_percentage": 18.05,
             "contracts_with_vuln_percentage": 15.57
@@ -99,7 +99,7 @@
                 "Cannot confirm vulnerability because contract not deployed on blockchain": 5
             },
             "vuln_per_contract": {},
-            "avg_duration": 193.57,
+            "avg_duration": 393.4,
             "timeout_percentage": 31.81,
             "success_percentage": 68.16,
             "contracts_with_vuln_percentage": 67.78
@@ -141,7 +141,7 @@
                 "analysis incomplete": 4
             },
             "vuln_per_contract": {},
-            "avg_duration": 1459.42,
+            "avg_duration": 402.59,
             "timeout_percentage": 37.32,
             "success_percentage": 62.66,
             "contracts_with_vuln_percentage": 14.29
@@ -177,7 +177,7 @@
                 "incomplete push instruction": 3104
             },
             "vuln_per_contract": {},
-            "avg_duration": 58.52,
+            "avg_duration": 20.12,
             "timeout_percentage": 0.0,
             "success_percentage": 85.29,
             "contracts_with_vuln_percentage": 17.8
@@ -234,7 +234,7 @@
             "fails": {},
             "infos": {},
             "vuln_per_contract": {},
-            "avg_duration": 10.66,
+            "avg_duration": 15.99,
             "timeout_percentage": 0.0,
             "success_percentage": 29.46,
             "contracts_with_vuln_percentage": 24.63
@@ -257,7 +257,7 @@
             "fails": {},
             "infos": {},
             "vuln_per_contract": {},
-            "avg_duration": 8.53,
+            "avg_duration": 15.47,
             "timeout_percentage": 0.0,
             "success_percentage": 99.99,
             "contracts_with_vuln_percentage": 97.31
