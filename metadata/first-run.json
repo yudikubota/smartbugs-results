@@ -28,6 +28,7 @@
                 "Denial of Services": 13,
                 "Access Control": 2
             },
+            "cat_per_contract": {},
             "n_errors": 64838,
             "errors": {},
             "n_fails": 9375,
@@ -37,7 +38,18 @@
             "avg_duration": 201.65,
             "timeout_percentage": 19.03,
             "success_percentage": 65.06,
-            "contracts_with_vuln_percentage": 13.45
+            "contracts_with_vuln": 3582,
+            "contracts_with_vuln_percentage": 13.45,
+            "contract_per_cat": {
+                "Arithmetic": 956,
+                "Front Running": 656,
+                "Bad Randomness": 735,
+                "Reentrancy": 208,
+                "Unknown Unknowns": 224,
+                "Unchecked Low Level Calls": 295,
+                "Denial of Services": 8,
+                "Access Control": 1
+            }
         },
         "conkas": {
             "total_duration": 1160095.99,
@@ -59,6 +71,7 @@
                 "Unchecked Low Level Calls": 295,
                 "Front Running": 929
             },
+            "cat_per_contract": {},
             "n_errors": 21399,
             "errors": {},
             "n_fails": 22149,
@@ -68,17 +81,22 @@
             "avg_duration": 43.56,
             "timeout_percentage": 1.89,
             "success_percentage": 18.05,
-            "contracts_with_vuln_percentage": 15.57
+            "contracts_with_vuln": 4148,
+            "contracts_with_vuln_percentage": 15.57,
+            "contract_per_cat": {
+                "Arithmetic": 1309,
+                "Time Manipulation": 1227,
+                "Reentrancy": 2207,
+                "Unchecked Low Level Calls": 294,
+                "Front Running": 862
+            }
         },
         "maian": {
             "total_duration": 10476126.69,
             "n_analysis": 26630,
-            "n_findings": 54121,
+            "n_findings": 2287,
             "n_sucessful": 18151,
             "findings": {
-                "No_Ether_leak_no_send": 16592,
-                "No_Ether_lock_Ether_refused": 17285,
-                "Not_destructible_no_self_destruct": 17957,
                 "Ether_lock": 2180,
                 "Ether_leak_verified": 29,
                 "Ether_leak": 11,
@@ -87,9 +105,10 @@
                 "Destructible": 2
             },
             "vuln_per_category": {
-                "Unknown Unknowns": 51834,
+                "Ignore": 51834,
                 "Access Control": 2287
             },
+            "cat_per_contract": {},
             "n_errors": 10684,
             "errors": {},
             "n_fails": 8479,
@@ -102,7 +121,12 @@
             "avg_duration": 393.4,
             "timeout_percentage": 31.81,
             "success_percentage": 68.16,
-            "contracts_with_vuln_percentage": 67.78
+            "contracts_with_vuln": 2281,
+            "contracts_with_vuln_percentage": 8.57,
+            "contract_per_cat": {
+                "Ignore": 17395,
+                "Access Control": 6
+            }
         },
         "mythril-0.23.5": {
             "total_duration": 10539914.15,
@@ -133,6 +157,7 @@
                 "Denial of Services": 674,
                 "Unchecked Low Level Calls": 124
             },
+            "cat_per_contract": {},
             "n_errors": 2033,
             "errors": {},
             "n_fails": 9786,
@@ -144,12 +169,21 @@
             "avg_duration": 402.59,
             "timeout_percentage": 37.32,
             "success_percentage": 62.66,
-            "contracts_with_vuln_percentage": 14.29
+            "contracts_with_vuln": 3740,
+            "contracts_with_vuln_percentage": 14.29,
+            "contract_per_cat": {
+                "Reentrancy": 740,
+                "Arithmetic": 897,
+                "Access Control": 173,
+                "Unknown Unknowns": 648,
+                "Denial of Services": 582,
+                "Unchecked Low Level Calls": 61
+            }
         },
         "oyente": {
             "total_duration": 535717.7,
             "n_analysis": 26631,
-            "n_findings": 9154,
+            "n_findings": 9153,
             "n_sucessful": 22713,
             "findings": {
                 "Callstack_Depth_Attack_Vulnerability": 288,
@@ -157,8 +191,7 @@
                 "Integer_Underflow": 2964,
                 "Timestamp_Dependency": 354,
                 "Transaction_Ordering_Dependence_TOD": 1207,
-                "Re_Entrancy_Vulnerability": 116,
-                "Parity_Multisig_Bug_2": 1
+                "Re_Entrancy_Vulnerability": 116
             },
             "vuln_per_category": {
                 "Denial of Services": 288,
@@ -166,8 +199,9 @@
                 "Time Manipulation": 354,
                 "Front Running": 1207,
                 "Reentrancy": 116,
-                "Unknown Unknowns": 1
+                "Ignore": 1
             },
+            "cat_per_contract": {},
             "n_errors": 17532,
             "errors": {},
             "n_fails": 5862,
@@ -180,33 +214,33 @@
             "avg_duration": 20.12,
             "timeout_percentage": 0.0,
             "success_percentage": 85.29,
-            "contracts_with_vuln_percentage": 17.8
+            "contracts_with_vuln": 4740,
+            "contracts_with_vuln_percentage": 17.8,
+            "contract_per_cat": {
+                "Arithmetic": 2733,
+                "Time Manipulation": 305,
+                "Front Running": 1122,
+                "Reentrancy": 93,
+                "Ignore": 1
+            }
         },
         "slither": {
             "total_duration": 425838.99,
             "n_analysis": 26634,
-            "n_findings": 39950,
+            "n_findings": 15545,
             "n_sucessful": 7847,
             "findings": {
-                "assembly": 1607,
-                "external_function": 6293,
                 "locked_ether": 355,
-                "naming_convention": 6340,
-                "solc_version": 4611,
-                "constable_states": 3485,
                 "incorrect_equality": 788,
                 "reentrancy_benign": 1862,
                 "reentrancy_no_eth": 1320,
                 "unused_return": 1210,
-                "unused_state": 974,
                 "arbitrary_send": 1079,
                 "calls_loop": 788,
                 "constant_function": 1460,
                 "low_level_calls": 995,
-                "pragma": 355,
                 "controlled_delegatecall": 83,
                 "shadowing_local": 869,
-                "deprecated_standards": 740,
                 "shadowing_builtin": 199,
                 "timestamp": 708,
                 "erc20_interface": 937,
@@ -221,13 +255,15 @@
                 "uninitialized_storage": 13
             },
             "vuln_per_category": {
-                "Unknown Unknowns": 31996,
+                "Ignore": 24405,
                 "Access Control": 1504,
+                "Unknown Unknowns": 7591,
                 "Reentrancy": 3959,
                 "Denial of Services": 788,
                 "Unchecked Low Level Calls": 995,
                 "Time Manipulation": 708
             },
+            "cat_per_contract": {},
             "n_errors": 24441,
             "errors": {},
             "n_fails": 20412,
@@ -237,20 +273,28 @@
             "avg_duration": 15.99,
             "timeout_percentage": 0.0,
             "success_percentage": 29.46,
-            "contracts_with_vuln_percentage": 24.63
+            "contracts_with_vuln": 5192,
+            "contracts_with_vuln_percentage": 19.49,
+            "contract_per_cat": {
+                "Access Control": 418,
+                "Ignore": 6482,
+                "Reentrancy": 2113,
+                "Unknown Unknowns": 4120,
+                "Unchecked Low Level Calls": 988,
+                "Denial of Services": 375,
+                "Time Manipulation": 708
+            }
         },
         "solhint": {
             "total_duration": 412040.78,
             "n_analysis": 26637,
-            "n_findings": 48286,
+            "n_findings": 0,
             "n_sucessful": 26634,
-            "findings": {
-                "indent": 25093,
-                "max_line_length": 23193
-            },
+            "findings": {},
             "vuln_per_category": {
-                "Unknown Unknowns": 48286
+                "Ignore": 48286
             },
+            "cat_per_contract": {},
             "n_errors": 25923,
             "errors": {},
             "n_fails": 3,
@@ -260,31 +304,36 @@
             "avg_duration": 15.47,
             "timeout_percentage": 0.0,
             "success_percentage": 99.99,
-            "contracts_with_vuln_percentage": 97.31
+            "contracts_with_vuln": 0,
+            "contracts_with_vuln_percentage": 0.0,
+            "contract_per_cat": {
+                "Ignore": 22366
+            }
         }
     },
     "total_duration": 28920100.050187588,
-    "total_findings": 175446,
+    "total_findings": 50920,
     "total_errors": 166850,
     "total_fails": 76066,
     "total_sucessful": 113883,
     "total_analysis": 185977,
     "total_timeouts": 23812,
     "total_contracts": 26669,
-    "total_contracts_with_vuln": 26628,
-    "percentage_contracts_with_vuln": 99.84626345194796,
+    "total_contracts_with_vuln": 9609,
+    "percentage_contracts_with_vuln": 36.03059732273426,
     "timeout_percentage": 12.803733795039172,
     "success_percentage": 61.23499142367067,
     "vulns_per_category": {
         "Bad Randomness": 1372,
         "Arithmetic": 14171,
-        "Unknown Unknowns": 136306,
+        "Unknown Unknowns": 11780,
         "Front Running": 3019,
         "Unchecked Low Level Calls": 1838,
         "Reentrancy": 8854,
         "Denial of Services": 1763,
         "Access Control": 4201,
-        "Time Manipulation": 3922
+        "Time Manipulation": 3922,
+        "Ignore": 124526
     },
     "findings_list": [
         "conkas,Integer_Overflow",
@@ -367,5 +416,18 @@
         "maian,Destructible_verified",
         "maian,Destructible"
     ],
-    "total_avg_duration": 155.50363781643745
+    "total_avg_duration": 155.50363781643745,
+    "unmapped_list": [],
+    "contract_per_cat": {
+        "Access Control": 588,
+        "Front Running": 2070,
+        "Time Manipulation": 1779,
+        "Arithmetic": 4060,
+        "Reentrancy": 3908,
+        "Ignore": 25996,
+        "Unknown Unknowns": 4455,
+        "Unchecked Low Level Calls": 1399,
+        "Bad Randomness": 735,
+        "Denial of Services": 933
+    }
 }

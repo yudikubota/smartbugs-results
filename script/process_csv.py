@@ -55,11 +55,17 @@ with open(os.path.join(ROOT, 'metadata', 'vulnerabilities_mapping_new.csv')) as 
         v = {}
         for header, value in zip(VULN_CSV_HEADERS, row):
             v[header] = value
+        
+        v['vuln'] = v['vuln'].strip().replace('-', '_')
 
-        if (v['ignore'] == 'true'):
+        if (v['ignore'] == 'Sim'):
+            vulnerability_mapping[v['vuln']] = 'Ignore'
             continue
 
-        vulnerability_mapping[v['vuln']] = str(v['dasp'] if v['dasp'] != '' else swc_to_dasp[v['swc']] if v['swc'] != '' else 'unknown')
+        if (not v['dasp']):
+            raise Exception(f'vulnerability {v["vuln"]} has no dasp mapping')
+
+        vulnerability_mapping[v['vuln']] = v['dasp']
 
 print('dasp_mapping', dasp_mapping)
 print('vulnerability_mapping', vulnerability_mapping)
@@ -67,6 +73,7 @@ print('vulnerability_mapping', vulnerability_mapping)
 # ----------------
 
 findings_list = []
+unmapped_list = set()
 
 def logger(msg):
     if SHOULD_PRINT:
@@ -94,6 +101,7 @@ def process_row(line):
         results_by_tool[toolid]['n_sucessful'] = 0
         results_by_tool[toolid]['findings'] = {}
         results_by_tool[toolid]['vuln_per_category'] = {}
+        results_by_tool[toolid]['cat_per_contract'] = {}
         results_by_tool[toolid]['n_errors'] = 0
         results_by_tool[toolid]['errors'] = {}
         results_by_tool[toolid]['n_fails'] = 0
@@ -107,21 +115,34 @@ def process_row(line):
     row_findings = 0
     for finding in v['findings'].split(','):
         finding = finding.strip()
-        if finding == '':
+        if (finding == ''):
             continue
-        results_by_tool[toolid]['n_findings'] += 1
-        results_by_tool[toolid]['findings'][finding] = results_by_tool[toolid]['findings'].get(finding, 0) + 1
-        row_findings += 1
+
+        vm = vulnerability_mapping.get(finding, 'Unmapped')
+        if (vm == 'Unmapped'):
+            unmapped_list.add(finding)
+        category = dasp_mapping[vm]
+
+        if (v['basename'] in results_by_tool[toolid]['cat_per_contract']):
+            results_by_tool[toolid]['cat_per_contract'][v['basename']].add(category)
+        else:
+            results_by_tool[toolid]['cat_per_contract'][v['basename']] = set()
 
         # vuln per category
-        category = dasp_mapping[vulnerability_mapping.get(finding, '10')]
         results_by_tool[toolid]['vuln_per_category'][category] = results_by_tool[toolid]['vuln_per_category'].get(category, 0) + 1
 
         fitem = f'{toolid},{finding}'
         if (fitem not in findings_list):
             findings_list.append(fitem)
 
-    results_by_tool[toolid]['vuln_per_contract'][v['basename']] = results_by_tool[toolid]['vuln_per_contract'].get(v['basename'], 0) + row_findings
+        if (category == 'Ignore'):
+            continue
+
+        results_by_tool[toolid]['n_findings'] += 1
+        results_by_tool[toolid]['findings'][finding] = results_by_tool[toolid]['findings'].get(finding, 0) + 1
+        row_findings += 1
+
+    results_by_tool[toolid]['vuln_per_contract'][v['basename']] = row_findings
 
     for info in v['infos'].split(','):
         info = info.strip()
@@ -177,6 +198,7 @@ total_sucessful = 0
 total_timeouts = 0
 vulns_per_contract = {}
 vulns_per_category = {}
+cat_per_contract = {}
 
 for toolid in results_by_tool:
     # average_duration_per_tool
@@ -200,7 +222,17 @@ for toolid in results_by_tool:
         vulns_per_contract[k] = vulns_per_contract.get(k, 0) + v
         if (v > 0):
             contracts_with_vuln += 1
+    results_by_tool[toolid]['contracts_with_vuln'] = contracts_with_vuln
     results_by_tool[toolid]['contracts_with_vuln_percentage'] = contracts_with_vuln / len(results_by_tool[toolid]['vuln_per_contract']) * 100
+
+    for contract in results_by_tool[toolid]['cat_per_contract']:
+        # results_by_tool[toolid]['cat_per_contract'][k] = list(results_by_tool[toolid]['cat_per_contract'][k])
+        cat_per_contract[contract] = (cat_per_contract[contract] if contract in cat_per_contract else set()).union(results_by_tool[toolid]['cat_per_contract'][contract])
+
+    results_by_tool[toolid]['contract_per_cat'] = {}
+    for contract in results_by_tool[toolid]['cat_per_contract']:
+        for cat in results_by_tool[toolid]['cat_per_contract'][contract]:
+            results_by_tool[toolid]['contract_per_cat'][cat] = results_by_tool[toolid]['contract_per_cat'].get(cat, 0) + 1
 
     # vuln per category
     for k, v in results_by_tool[toolid]['vuln_per_category'].items():
@@ -211,10 +243,15 @@ for toolid in results_by_tool:
 # get percentage of contracts that have at least one vulnerability
 total_contracts_with_vuln = len([k for k, v in vulns_per_contract.items() if v > 0])
 percentage_contracts_with_vuln = total_contracts_with_vuln / len(vulns_per_contract) * 100
+cat_per_contract = {k: list(v) for k, v in cat_per_contract.items()}
+
+contract_per_cat = {}
+for contract in cat_per_contract:
+    for cat in cat_per_contract[contract]:
+        contract_per_cat[cat] = contract_per_cat.get(cat, 0) + 1
 
 timeout_percentage = total_timeouts / total_analysis * 100
 success_percentage = total_sucessful / total_analysis * 100
-
 total_avg_duration = total_duration / total_analysis
 
 # clean results
@@ -228,6 +265,7 @@ for toolid in results_by_tool:
     results_by_tool[toolid]['errors'] = {}
     results_by_tool[toolid]['fails'] = {}
     results_by_tool[toolid]['vuln_per_contract'] = {}
+    results_by_tool[toolid]['cat_per_contract'] = {}
 
 logger(f'=== Results ===')
 results = {
@@ -247,11 +285,16 @@ results = {
     'vulns_per_category': vulns_per_category,
     'findings_list': findings_list,
     'total_avg_duration': total_avg_duration,
+    'unmapped_list': list(unmapped_list),
+    # 'cat_per_contract': cat_per_contract,
+    'contract_per_cat': contract_per_cat,
 }
 
 with open(OUTPUT_JSON_FILE, 'w') as fp:
     json.dump(results, fp, indent=4)
 # print(json.dumps(results, indent=4))
+
+# ---
 
 # plot vulnerabilities per contract
 # import matplotlib.pyplot as plt

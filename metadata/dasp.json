@@ -8,5 +8,7 @@
     "7": "Front Running",
     "8": "Time Manipulation",
     "9": "Short Addresses",
-    "10": "Unknown Unknowns"
+    "10": "Unknown Unknowns",
+    "Unmapped": "Unmapped",
+    "Ignore": "Ignore"
 }
