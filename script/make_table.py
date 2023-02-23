@@ -32,6 +32,7 @@ print('')
 
 tool_list = data['results_by_tool'].keys()
 category_list = data['contract_per_cat'].keys()
+total_contracts = data['total_contracts']
 
 print('\\hline')
 print('\\textbf{Categoria}', end=' & ')
@@ -44,16 +45,22 @@ for category in category_list:
     print(category, end=' & ')
     for tool in tool_list:
         v = data['results_by_tool'][tool]['contract_per_cat'][category] if category in data['results_by_tool'][tool]['contract_per_cat'] else 0
+        p = int(v / total_contracts * 100)
+        v = f'{v} {p}\%'
         print(v, end=' & ')
-    print(0,'\\\\')
+    print(0,' 0\%\\\\')
     # print(data['results_by_tool'][tool]['total_contracts'],'\\\\')
 
 print('\\hline')
 print('\\textbf{Total}', end=' & ')
 for tool in tool_list:
     v = data['results_by_tool'][tool]['contracts_with_vuln']
+    p = int(v / total_contracts * 100)
+    v = f'{v} {p}\%'
     print(v, end=' & ')
-print(data['total_contracts_with_vuln'],'\\\\')
+v = data['total_contracts_with_vuln']
+p = round(v / total_contracts * 100, 0)
+print(v,'\\\\')
 print('\\hline')
 
 
