@@ -10,7 +10,23 @@ ROOT = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 # OUTPUT_JSON_FILE = os.path.join(ROOT, 'metadata', 'first-run.json')
 INPUT_CSV_FILE = sys.argv[1]
 OUTPUT_JSON_FILE = sys.argv[2]
-IGNORED_TOOLS = (sys.argv[3] if len(sys.argv) > 3 else '').split(',')
+
+# confuzzius
+# conkas
+# maian
+# manticore-0.3.7
+# mythril-0.23.15
+# mythril-0.23.5
+# osiris
+# oyente
+# securify
+# slither
+# smartcheck
+# solhint-3.3.8
+# solhint
+
+IGNORED_TOOLS = ['solhint', 'smartcheck', 'securify', 'manticore-0.3.7', 'osiris']
+# IGNORED_TOOLS = (sys.argv[3] if len(sys.argv) > 3 else '').split(',')
 CSV_HEADERS = [
     'filename',
     'basename',
@@ -72,7 +88,6 @@ print('vulnerability_mapping', vulnerability_mapping)
 
 # ----------------
 
-findings_list = []
 unmapped_list = set()
 
 def logger(msg):
@@ -100,49 +115,41 @@ def process_row(line):
         results_by_tool[toolid]['n_findings'] = 0
         results_by_tool[toolid]['n_sucessful'] = 0
         results_by_tool[toolid]['findings'] = {}
-        results_by_tool[toolid]['vuln_per_category'] = {}
+        results_by_tool[toolid]['q_findings_per_category'] = {}
         results_by_tool[toolid]['cat_per_contract'] = {}
         results_by_tool[toolid]['n_errors'] = 0
         results_by_tool[toolid]['errors'] = {}
         results_by_tool[toolid]['n_fails'] = 0
         results_by_tool[toolid]['fails'] = {}
         results_by_tool[toolid]['infos'] = {}
-        results_by_tool[toolid]['vuln_per_contract'] = {}
+        results_by_tool[toolid]['findings_per_contract'] = {}
 
     results_by_tool[toolid]['total_duration'] += float(v['duration'])
     results_by_tool[toolid]['n_analysis'] += 1
 
-    row_findings = 0
+    results_by_tool[toolid]['cat_per_contract'][v['basename']] = set()
+    results_by_tool[toolid]['findings_per_contract'][v['basename']] = set()
+
     for finding in v['findings'].split(','):
         finding = finding.strip()
         if (finding == ''):
             continue
 
+        results_by_tool[toolid]['findings_per_contract'][v['basename']].add(finding)
+
         vm = vulnerability_mapping.get(finding, 'Unmapped')
         if (vm == 'Unmapped'):
-            unmapped_list.add(finding)
+            unmapped_list.add(f'{toolid},{finding}')
         category = dasp_mapping[vm]
 
-        if (v['basename'] in results_by_tool[toolid]['cat_per_contract']):
-            results_by_tool[toolid]['cat_per_contract'][v['basename']].add(category)
-        else:
-            results_by_tool[toolid]['cat_per_contract'][v['basename']] = set()
-
-        # vuln per category
-        results_by_tool[toolid]['vuln_per_category'][category] = results_by_tool[toolid]['vuln_per_category'].get(category, 0) + 1
-
-        fitem = f'{toolid},{finding}'
-        if (fitem not in findings_list):
-            findings_list.append(fitem)
+        results_by_tool[toolid]['cat_per_contract'][v['basename']].add(category)
+        results_by_tool[toolid]['q_findings_per_category'][category] = results_by_tool[toolid]['q_findings_per_category'].get(category, 0) + 1
 
         if (category == 'Ignore'):
             continue
 
         results_by_tool[toolid]['n_findings'] += 1
         results_by_tool[toolid]['findings'][finding] = results_by_tool[toolid]['findings'].get(finding, 0) + 1
-        row_findings += 1
-
-    results_by_tool[toolid]['vuln_per_contract'][v['basename']] = row_findings
 
     for info in v['infos'].split(','):
         info = info.strip()
@@ -168,7 +175,7 @@ def process_row(line):
 
     results_by_tool[toolid]['n_sucessful'] += 1 if row_fails == 0 else 0
 
-# read the csv file line by line
+# MAIN | read the csv file line by line
 with open(INPUT_CSV_FILE, 'r') as fp:
     csvreader = csv.reader(fp)
 
@@ -197,8 +204,8 @@ total_fails = 0
 total_sucessful = 0
 total_timeouts = 0
 vulns_per_contract = {}
-vulns_per_category = {}
 cat_per_contract = {}
+vulns_per_category = {}
 
 for toolid in results_by_tool:
     # average_duration_per_tool
@@ -218,31 +225,42 @@ for toolid in results_by_tool:
     total_timeouts += timeouts
     results_by_tool[toolid]['success_percentage'] = results_by_tool[toolid]['n_sucessful'] / results_by_tool[toolid]['n_analysis'] * 100
     contracts_with_vuln = 0
-    for k, v in results_by_tool[toolid]['vuln_per_contract'].items():
-        vulns_per_contract[k] = vulns_per_contract.get(k, 0) + v
-        if (v > 0):
-            contracts_with_vuln += 1
-    results_by_tool[toolid]['contracts_with_vuln'] = contracts_with_vuln
-    results_by_tool[toolid]['contracts_with_vuln_percentage'] = contracts_with_vuln / len(results_by_tool[toolid]['vuln_per_contract']) * 100
 
-    for contract in results_by_tool[toolid]['cat_per_contract']:
-        # results_by_tool[toolid]['cat_per_contract'][k] = list(results_by_tool[toolid]['cat_per_contract'][k])
-        cat_per_contract[contract] = (cat_per_contract[contract] if contract in cat_per_contract else set()).union(results_by_tool[toolid]['cat_per_contract'][contract])
+    # parei de revisar aqui...
 
     results_by_tool[toolid]['contract_per_cat'] = {}
-    for contract in results_by_tool[toolid]['cat_per_contract']:
-        for cat in results_by_tool[toolid]['cat_per_contract'][contract]:
+    for contract, cats in results_by_tool[toolid]['cat_per_contract'].items():
+        if (contract not in cat_per_contract):
+            cat_per_contract[contract] = cats
+        else:
+            cat_per_contract[contract].update(cats)
+
+        should_count = False
+
+        for cat in cats:
             results_by_tool[toolid]['contract_per_cat'][cat] = results_by_tool[toolid]['contract_per_cat'].get(cat, 0) + 1
 
+            if (cat != 'Ignore'):
+                should_count = True
+
+        if (should_count):
+            contracts_with_vuln += 1
+
+    results_by_tool[toolid]['contracts_with_vuln'] = contracts_with_vuln
+    if (results_by_tool[toolid]['n_analysis']):
+        results_by_tool[toolid]['contracts_with_vuln_percentage'] = contracts_with_vuln / results_by_tool[toolid]['n_analysis'] * 100
+    else:
+        results_by_tool[toolid]['contracts_with_vuln_percentage'] = 0
+
     # vuln per category
-    for k, v in results_by_tool[toolid]['vuln_per_category'].items():
+    for k, v in results_by_tool[toolid]['q_findings_per_category'].items():
         vulns_per_category[k] = vulns_per_category.get(k, 0) + v
 
-    # tratar quando deu erro não considerar no % de sucesso/vulnerabilidades
-
 # get percentage of contracts that have at least one vulnerability
-total_contracts_with_vuln = len([k for k, v in vulns_per_contract.items() if v > 0])
-percentage_contracts_with_vuln = total_contracts_with_vuln / len(vulns_per_contract) * 100
+# total_contracts_with_vuln = len([k for k, v in vulns_per_contract.items() if v > 0])
+# percentage_contracts_with_vuln = total_contracts_with_vuln / len(vulns_per_contract) * 100
+total_contracts_with_vuln = 0
+percentage_contracts_with_vuln = 0
 cat_per_contract = {k: list(v) for k, v in cat_per_contract.items()}
 
 contract_per_cat = {}
@@ -264,8 +282,10 @@ for toolid in results_by_tool:
 
     results_by_tool[toolid]['errors'] = {}
     results_by_tool[toolid]['fails'] = {}
-    results_by_tool[toolid]['vuln_per_contract'] = {}
-    results_by_tool[toolid]['cat_per_contract'] = {}
+    # results_by_tool[toolid]['findings_per_contract'] = {}
+    # results_by_tool[toolid]['cat_per_contract'] = {}
+    results_by_tool[toolid]['findings_per_contract'] = [(k, list(v)) for k, v in results_by_tool[toolid]['findings_per_contract'].items()]
+    results_by_tool[toolid]['cat_per_contract'] = [(k, list(v)) for k, v in results_by_tool[toolid]['cat_per_contract'].items()]
 
 logger(f'=== Results ===')
 results = {
@@ -283,12 +303,14 @@ results = {
     'timeout_percentage': timeout_percentage,
     'success_percentage': success_percentage,
     'vulns_per_category': vulns_per_category,
-    'findings_list': findings_list,
     'total_avg_duration': total_avg_duration,
     'unmapped_list': list(unmapped_list),
     # 'cat_per_contract': cat_per_contract,
     'contract_per_cat': contract_per_cat,
+    'cat_per_contract': cat_per_contract,
 }
+
+# print(results)
 
 with open(OUTPUT_JSON_FILE, 'w') as fp:
     json.dump(results, fp, indent=4)

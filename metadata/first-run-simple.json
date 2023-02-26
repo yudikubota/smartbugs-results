@@ -1,0 +1,424 @@
+{
+    "results_by_tool": {
+        "confuzzius": {
+            "total_duration": 637.1,
+            "n_analysis": 2,
+            "n_findings": 0,
+            "n_sucessful": 1,
+            "findings": {},
+            "vuln_per_category": {},
+            "cat_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    [
+                        "Arithmetic",
+                        "Ignore",
+                        "Access Control",
+                        "Time Manipulation",
+                        "Unknown Unknowns"
+                    ]
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    [
+                        "Time Manipulation",
+                        "Ignore",
+                        "Unknown Unknowns"
+                    ]
+                ]
+            ],
+            "n_errors": 2,
+            "errors": {},
+            "n_fails": 1,
+            "fails": {},
+            "infos": {},
+            "vuln_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    []
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    []
+                ]
+            ],
+            "avg_duration": 318.55,
+            "timeout_percentage": 50.0,
+            "success_percentage": 50.0,
+            "contract_per_cat": {},
+            "contracts_with_vuln": 0,
+            "contracts_with_vuln_percentage": 0.0
+        },
+        "conkas": {
+            "total_duration": 218.19,
+            "n_analysis": 2,
+            "n_findings": 1,
+            "n_sucessful": 0,
+            "findings": {
+                "Integer_Overflow": 1
+            },
+            "vuln_per_category": {
+                "Arithmetic": 1
+            },
+            "cat_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    [
+                        "Arithmetic"
+                    ]
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    []
+                ]
+            ],
+            "n_errors": 2,
+            "errors": {},
+            "n_fails": 2,
+            "fails": {},
+            "infos": {},
+            "vuln_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    [
+                        "Integer_Overflow"
+                    ]
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    []
+                ]
+            ],
+            "avg_duration": 109.1,
+            "timeout_percentage": 0.0,
+            "success_percentage": 0.0,
+            "contract_per_cat": {
+                "Arithmetic": 1
+            },
+            "contracts_with_vuln": 1,
+            "contracts_with_vuln_percentage": 50.0
+        },
+        "maian": {
+            "total_duration": 1240.07,
+            "n_analysis": 2,
+            "n_findings": 0,
+            "n_sucessful": 0,
+            "findings": {},
+            "vuln_per_category": {
+                "Ignore": 3
+            },
+            "cat_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    [
+                        "Ignore"
+                    ]
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    []
+                ]
+            ],
+            "n_errors": 1,
+            "errors": {},
+            "n_fails": 2,
+            "fails": {},
+            "infos": {
+                "analysis incomplete": 1
+            },
+            "vuln_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    []
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    []
+                ]
+            ],
+            "avg_duration": 620.03,
+            "timeout_percentage": 100.0,
+            "success_percentage": 0.0,
+            "contract_per_cat": {
+                "Ignore": 1
+            },
+            "contracts_with_vuln": 0,
+            "contracts_with_vuln_percentage": 0.0
+        },
+        "mythril-0.23.15": {
+            "total_duration": 1146.28,
+            "n_analysis": 2,
+            "n_findings": 0,
+            "n_sucessful": 1,
+            "findings": {},
+            "vuln_per_category": {},
+            "cat_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    []
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    []
+                ]
+            ],
+            "n_errors": 0,
+            "errors": {},
+            "n_fails": 1,
+            "fails": {},
+            "infos": {},
+            "vuln_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    []
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    []
+                ]
+            ],
+            "avg_duration": 573.14,
+            "timeout_percentage": 50.0,
+            "success_percentage": 50.0,
+            "contract_per_cat": {},
+            "contracts_with_vuln": 0,
+            "contracts_with_vuln_percentage": 0.0
+        },
+        "mythril-0.23.5": {
+            "total_duration": 1125.61,
+            "n_analysis": 2,
+            "n_findings": 0,
+            "n_sucessful": 1,
+            "findings": {},
+            "vuln_per_category": {},
+            "cat_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    []
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    []
+                ]
+            ],
+            "n_errors": 0,
+            "errors": {},
+            "n_fails": 1,
+            "fails": {},
+            "infos": {},
+            "vuln_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    []
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    []
+                ]
+            ],
+            "avg_duration": 562.81,
+            "timeout_percentage": 50.0,
+            "success_percentage": 50.0,
+            "contract_per_cat": {},
+            "contracts_with_vuln": 0,
+            "contracts_with_vuln_percentage": 0.0
+        },
+        "oyente": {
+            "total_duration": 19.45,
+            "n_analysis": 2,
+            "n_findings": 0,
+            "n_sucessful": 0,
+            "findings": {},
+            "vuln_per_category": {},
+            "cat_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    []
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    []
+                ]
+            ],
+            "n_errors": 0,
+            "errors": {},
+            "n_fails": 4,
+            "fails": {},
+            "infos": {
+                "analysis incomplete": 2,
+                "incomplete push instruction": 1
+            },
+            "vuln_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    []
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    []
+                ]
+            ],
+            "avg_duration": 9.73,
+            "timeout_percentage": 0.0,
+            "success_percentage": 0.0,
+            "contract_per_cat": {},
+            "contracts_with_vuln": 0,
+            "contracts_with_vuln_percentage": 0.0
+        },
+        "slither": {
+            "total_duration": 41.53,
+            "n_analysis": 2,
+            "n_findings": 0,
+            "n_sucessful": 0,
+            "findings": {},
+            "vuln_per_category": {},
+            "cat_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    []
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    []
+                ]
+            ],
+            "n_errors": 2,
+            "errors": {},
+            "n_fails": 2,
+            "fails": {},
+            "infos": {},
+            "vuln_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    []
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    []
+                ]
+            ],
+            "avg_duration": 20.76,
+            "timeout_percentage": 0.0,
+            "success_percentage": 0.0,
+            "contract_per_cat": {},
+            "contracts_with_vuln": 0,
+            "contracts_with_vuln_percentage": 0.0
+        },
+        "solhint-3.3.8": {
+            "total_duration": 18.23,
+            "n_analysis": 2,
+            "n_findings": 8,
+            "n_sucessful": 2,
+            "findings": {
+                "avoid_low_level_calls": 2,
+                "no_inline_assembly": 2,
+                "not_rely_on_time": 2,
+                "state_visibility": 1,
+                "compiler_version": 1
+            },
+            "vuln_per_category": {
+                "Unknown Unknowns": 5,
+                "Ignore": 13,
+                "Time Manipulation": 2,
+                "Access Control": 1
+            },
+            "cat_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    [
+                        "Access Control",
+                        "Time Manipulation",
+                        "Ignore",
+                        "Unknown Unknowns"
+                    ]
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    [
+                        "Time Manipulation",
+                        "Ignore",
+                        "Unknown Unknowns"
+                    ]
+                ]
+            ],
+            "n_errors": 1,
+            "errors": {},
+            "n_fails": 0,
+            "fails": {},
+            "infos": {},
+            "vuln_per_contract": [
+                [
+                    "0x000000000000541e251335090ac5b47176af4f7e.sol",
+                    [
+                        "no_inline_assembly",
+                        "not_rely_on_time",
+                        "avoid_low_level_calls",
+                        "state_visibility"
+                    ]
+                ],
+                [
+                    "0x000000000000c1cb11d5c062901f32d06248ce48.sol",
+                    [
+                        "no_inline_assembly",
+                        "not_rely_on_time",
+                        "compiler_version",
+                        "avoid_low_level_calls"
+                    ]
+                ]
+            ],
+            "avg_duration": 9.12,
+            "timeout_percentage": 0.0,
+            "success_percentage": 100.0,
+            "contract_per_cat": {
+                "Access Control": 1,
+                "Time Manipulation": 2,
+                "Ignore": 2,
+                "Unknown Unknowns": 2
+            },
+            "contracts_with_vuln": 2,
+            "contracts_with_vuln_percentage": 100.0
+        }
+    },
+    "total_duration": 4446.464471101761,
+    "total_findings": 9,
+    "total_errors": 8,
+    "total_fails": 13,
+    "total_sucessful": 5,
+    "total_analysis": 16,
+    "total_timeouts": 5,
+    "total_contracts": 0,
+    "total_contracts_with_vuln": 0,
+    "percentage_contracts_with_vuln": 0,
+    "timeout_percentage": 31.25,
+    "success_percentage": 31.25,
+    "vulns_per_category": {
+        "Arithmetic": 1,
+        "Ignore": 16,
+        "Unknown Unknowns": 5,
+        "Time Manipulation": 2,
+        "Access Control": 1
+    },
+    "total_avg_duration": 277.90402944386005,
+    "unmapped_list": [],
+    "contract_per_cat": {
+        "Arithmetic": 1,
+        "Ignore": 2,
+        "Access Control": 1,
+        "Time Manipulation": 2,
+        "Unknown Unknowns": 2
+    },
+    "cat_per_contract": {
+        "0x000000000000541e251335090ac5b47176af4f7e.sol": [
+            "Arithmetic",
+            "Ignore",
+            "Access Control",
+            "Time Manipulation",
+            "Unknown Unknowns"
+        ],
+        "0x000000000000c1cb11d5c062901f32d06248ce48.sol": [
+            "Time Manipulation",
+            "Ignore",
+            "Unknown Unknowns"
+        ]
+    }
+}
