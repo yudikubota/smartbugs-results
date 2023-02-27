@@ -25,7 +25,8 @@ OUTPUT_JSON_FILE = sys.argv[2]
 # solhint-3.3.8
 # solhint
 
-IGNORED_TOOLS = ['solhint', 'smartcheck', 'securify', 'manticore-0.3.7', 'osiris']
+IGNORED_TOOLS = ['solhint', 'smartcheck', 'securify', 'manticore-0.3.7', 'osiris', 'mythril-0.23.5', 'solhint-3.3.8']
+# IGNORED_TOOLS = ['solhint', 'smartcheck', 'securify', 'manticore-0.3.7', 'osiris']
 # IGNORED_TOOLS = (sys.argv[3] if len(sys.argv) > 3 else '').split(',')
 CSV_HEADERS = [
     'filename',
@@ -83,97 +84,100 @@ with open(os.path.join(ROOT, 'metadata', 'vulnerabilities_mapping_new.csv')) as 
 
         vulnerability_mapping[v['vuln']] = v['dasp']
 
-print('dasp_mapping', dasp_mapping)
-print('vulnerability_mapping', vulnerability_mapping)
-
 # ----------------
 
 unmapped_list = set()
+total_timeouts = 0
 
 def logger(msg):
     if SHOULD_PRINT:
         print(msg)
 
-def process_row(line):
+logger(f'dasp_mapping {dasp_mapping}')
+logger(f'vulnerability_mapping {vulnerability_mapping}')
+
+def init_tool_results(toolid):
     global results_by_tool
+    if (not results_by_tool.get(toolid, None)):
+        results_by_tool[toolid] = {}
+        tool_results = results_by_tool[toolid]
+        tool_results['total_duration'] = 0
+        tool_results['n_analysis'] = 0
+        tool_results['n_findings'] = 0
+        tool_results['n_sucessful'] = 0
+        tool_results['findings'] = {}
+        # tool_results['q_findings_per_category'] = {}
+        tool_results['cat_per_contract'] = {}
+        tool_results['n_errors'] = 0
+        tool_results['errors'] = {}
+        tool_results['n_fails'] = 0
+        tool_results['n_timeouts'] = 0
+        tool_results['fails'] = {}
+        tool_results['infos'] = {}
+        tool_results['findings_per_contract'] = {}
+
+    return results_by_tool[toolid]
+
+def process_row(line):
+    global results_by_tool, total_timeouts
 
     v = {}
     for header, value in zip(CSV_HEADERS, line):
         v[header] = value
-
-    logger(f"processing {v['basename']}...")
-
     toolid = v['toolid']
+    contract_address = v['basename']
 
     if (toolid in IGNORED_TOOLS):
         return
 
-    if (not results_by_tool.get(toolid, None)):
-        results_by_tool[toolid] = {}
-        results_by_tool[toolid]['total_duration'] = 0
-        results_by_tool[toolid]['n_analysis'] = 0
-        results_by_tool[toolid]['n_findings'] = 0
-        results_by_tool[toolid]['n_sucessful'] = 0
-        results_by_tool[toolid]['findings'] = {}
-        results_by_tool[toolid]['q_findings_per_category'] = {}
-        results_by_tool[toolid]['cat_per_contract'] = {}
-        results_by_tool[toolid]['n_errors'] = 0
-        results_by_tool[toolid]['errors'] = {}
-        results_by_tool[toolid]['n_fails'] = 0
-        results_by_tool[toolid]['fails'] = {}
-        results_by_tool[toolid]['infos'] = {}
-        results_by_tool[toolid]['findings_per_contract'] = {}
+    logger(f"processing {v['basename']} {toolid}...")
 
-    results_by_tool[toolid]['total_duration'] += float(v['duration'])
-    results_by_tool[toolid]['n_analysis'] += 1
+    tool_results = init_tool_results(toolid)
 
-    results_by_tool[toolid]['cat_per_contract'][v['basename']] = set()
-    results_by_tool[toolid]['findings_per_contract'][v['basename']] = set()
+    tool_results['total_duration'] += float(v['duration'])
+    tool_results['n_analysis'] += 1
 
-    for finding in v['findings'].split(','):
-        finding = finding.strip()
-        if (finding == ''):
-            continue
+    this_contract_categories = tool_results['cat_per_contract'].get(contract_address, set())
+    this_contract_findings = tool_results['findings_per_contract'].get(contract_address, set())
+    v['findings'] = [f.strip() for f in v['findings'].split(',') if f.strip() != '']
+    v['errors']   = [f.strip() for f in v['errors'].split(',') if f.strip() != '']
+    v['infos']    = [f.strip() for f in v['infos'].split(',') if f.strip() != '']
+    v['fails']    = [f.strip() for f in v['fails'].split(',') if f.strip() != '']
 
-        results_by_tool[toolid]['findings_per_contract'][v['basename']].add(finding)
-
+    for finding in v['findings']:
         vm = vulnerability_mapping.get(finding, 'Unmapped')
         if (vm == 'Unmapped'):
             unmapped_list.add(f'{toolid},{finding}')
         category = dasp_mapping[vm]
 
-        results_by_tool[toolid]['cat_per_contract'][v['basename']].add(category)
-        results_by_tool[toolid]['q_findings_per_category'][category] = results_by_tool[toolid]['q_findings_per_category'].get(category, 0) + 1
+        logger(f'{contract_address} {toolid} / finding -> category : {finding} -> {category} / this_contract_categories: {this_contract_categories} / this_contract_findings: {this_contract_findings}')
 
         if (category == 'Ignore'):
             continue
 
-        results_by_tool[toolid]['n_findings'] += 1
-        results_by_tool[toolid]['findings'][finding] = results_by_tool[toolid]['findings'].get(finding, 0) + 1
+        this_contract_findings.add(finding)
+        this_contract_categories.add(category)
 
-    for info in v['infos'].split(','):
-        info = info.strip()
-        if info == '':
-            continue
-        results_by_tool[toolid]['infos'][info] = results_by_tool[toolid]['infos'].get(info, 0) + 1
+        tool_results['n_findings'] += 1
+        tool_results['findings'][finding] = tool_results['findings'].get(finding, 0) + 1
 
-    for error in v['errors'].split(','):
-        error = error.strip()
-        if error == '':
-            continue
-        results_by_tool[toolid]['errors'][error] = results_by_tool[toolid]['errors'].get(error, 0) + 1
-        results_by_tool[toolid]['n_errors'] += 1
+    for info in v['infos']:
+        tool_results['infos'][info] = tool_results['infos'].get(info, 0) + 1
 
-    row_fails = 0
-    for fail in v['fails'].split(','):
-        fail = fail.strip()
-        if fail == '':
-            continue
-        results_by_tool[toolid]['fails'][fail] = results_by_tool[toolid]['fails'].get(fail, 0) + 1
-        results_by_tool[toolid]['n_fails'] += 1
-        row_fails += 1
+    tool_results['n_errors'] += len(v['errors'])
+    for error in v['errors']:
+        tool_results['errors'][error] = tool_results['errors'].get(error, 0) + 1
 
-    results_by_tool[toolid]['n_sucessful'] += 1 if row_fails == 0 else 0
+    timeouts = 1 if 'DOCKER_TIMEOUT' in v['fails'] else 0
+    total_timeouts += timeouts
+    row_fails = len(v['fails'])
+
+    tool_results['n_fails'] += row_fails
+    tool_results['n_timeouts'] += timeouts
+    tool_results['n_sucessful'] += 1 if row_fails == 0 else 0
+
+    tool_results['cat_per_contract'][contract_address] = this_contract_categories
+    tool_results['findings_per_contract'][contract_address] = this_contract_findings
 
 # MAIN | read the csv file line by line
 with open(INPUT_CSV_FILE, 'r') as fp:
@@ -202,90 +206,87 @@ total_findings = 0
 total_errors = 0
 total_fails = 0
 total_sucessful = 0
-total_timeouts = 0
-vulns_per_contract = {}
+
+# vulns_per_contract = {}
 cat_per_contract = {}
-vulns_per_category = {}
+# vulns_per_category = {}
 
 for toolid in results_by_tool:
+    tool_results = results_by_tool[toolid]
+
     # average_duration_per_tool
-    results_by_tool[toolid]['avg_duration'] = results_by_tool[toolid]['total_duration'] / results_by_tool[toolid]['n_analysis']
+    tool_results['avg_duration'] = tool_results['total_duration'] / tool_results['n_analysis']
 
     # totals
-    total_duration += results_by_tool[toolid]['total_duration']
-    total_findings += results_by_tool[toolid]['n_findings']
-    total_errors += results_by_tool[toolid]['n_errors']
-    total_fails += results_by_tool[toolid]['n_fails']
-    total_sucessful += results_by_tool[toolid]['n_sucessful']
-    total_analysis += results_by_tool[toolid]['n_analysis']
+    total_duration += tool_results['total_duration']
+    total_findings += tool_results['n_findings']
+    total_errors += tool_results['n_errors']
+    total_fails += tool_results['n_fails']
+    total_sucessful += tool_results['n_sucessful']
+    total_analysis += tool_results['n_analysis']
 
     # other data
-    timeouts = results_by_tool[toolid]['fails'].get('DOCKER_TIMEOUT', 0)
-    results_by_tool[toolid]['timeout_percentage'] = timeouts / results_by_tool[toolid]['n_analysis'] * 100
-    total_timeouts += timeouts
-    results_by_tool[toolid]['success_percentage'] = results_by_tool[toolid]['n_sucessful'] / results_by_tool[toolid]['n_analysis'] * 100
+    tool_results['timeout_percentage'] = tool_results['n_timeouts'] / tool_results['n_analysis'] * 100
+    tool_results['success_percentage'] = tool_results['n_sucessful'] / tool_results['n_analysis'] * 100
     contracts_with_vuln = 0
 
-    # parei de revisar aqui...
+    tool_results['q_contract_per_cat'] = {}
+    for contract, cats in tool_results['cat_per_contract'].items():
+        cat_per_contract[contract] = cat_per_contract.get(contract, set())
 
-    results_by_tool[toolid]['contract_per_cat'] = {}
-    for contract, cats in results_by_tool[toolid]['cat_per_contract'].items():
-        if (contract not in cat_per_contract):
-            cat_per_contract[contract] = cats
-        else:
-            cat_per_contract[contract].update(cats)
-
-        should_count = False
-
-        for cat in cats:
-            results_by_tool[toolid]['contract_per_cat'][cat] = results_by_tool[toolid]['contract_per_cat'].get(cat, 0) + 1
-
-            if (cat != 'Ignore'):
-                should_count = True
-
+        should_count = any([c != 'Ignore' for c in cats])
         if (should_count):
             contracts_with_vuln += 1
 
-    results_by_tool[toolid]['contracts_with_vuln'] = contracts_with_vuln
-    if (results_by_tool[toolid]['n_analysis']):
-        results_by_tool[toolid]['contracts_with_vuln_percentage'] = contracts_with_vuln / results_by_tool[toolid]['n_analysis'] * 100
+        for cat in cats:
+            tool_results['q_contract_per_cat'][cat] = tool_results['q_contract_per_cat'].get(cat, 0) + 1
+            cat_per_contract[contract].add(cat)
+
+    tool_results['contracts_with_vuln'] = contracts_with_vuln
+    if (tool_results['n_analysis']):
+        tool_results['contracts_with_vuln_percentage'] = contracts_with_vuln / tool_results['n_analysis'] * 100
     else:
-        results_by_tool[toolid]['contracts_with_vuln_percentage'] = 0
+        tool_results['contracts_with_vuln_percentage'] = 0
 
     # vuln per category
-    for k, v in results_by_tool[toolid]['q_findings_per_category'].items():
-        vulns_per_category[k] = vulns_per_category.get(k, 0) + v
+    # for k, v in tool_results['q_findings_per_category'].items():
+    #     vulns_per_category[k] = vulns_per_category.get(k, 0) + v
 
 # get percentage of contracts that have at least one vulnerability
-# total_contracts_with_vuln = len([k for k, v in vulns_per_contract.items() if v > 0])
-# percentage_contracts_with_vuln = total_contracts_with_vuln / len(vulns_per_contract) * 100
+q_contracts = len(cat_per_contract)
+q_contract_per_cat = {}
 total_contracts_with_vuln = 0
-percentage_contracts_with_vuln = 0
+for contract, cats in cat_per_contract.items():
+    if (any([c != 'Ignore' for c in cats])):
+        total_contracts_with_vuln += 1
+
+    for cat in cats:
+        q_contract_per_cat[cat] = q_contract_per_cat.get(cat, 0) + 1
+
+percentage_contracts_with_vuln = total_contracts_with_vuln / q_contracts * 100
+
+# for json output
 cat_per_contract = {k: list(v) for k, v in cat_per_contract.items()}
 
-contract_per_cat = {}
-for contract in cat_per_contract:
-    for cat in cat_per_contract[contract]:
-        contract_per_cat[cat] = contract_per_cat.get(cat, 0) + 1
-
-timeout_percentage = total_timeouts / total_analysis * 100
-success_percentage = total_sucessful / total_analysis * 100
-total_avg_duration = total_duration / total_analysis
+timeout_percentage = round(total_timeouts / total_analysis * 100, 2)
+success_percentage = round(total_sucessful / total_analysis * 100, 2)
+total_avg_duration = round(total_duration / total_analysis, 2)
 
 # clean results
 for toolid in results_by_tool:
-    results_by_tool[toolid]['total_duration'] = round(results_by_tool[toolid]['total_duration'], 2)
-    results_by_tool[toolid]['avg_duration'] = round(results_by_tool[toolid]['avg_duration'], 2)
-    results_by_tool[toolid]['timeout_percentage'] = round(results_by_tool[toolid]['timeout_percentage'], 2)
-    results_by_tool[toolid]['success_percentage'] = round(results_by_tool[toolid]['success_percentage'], 2)
-    results_by_tool[toolid]['contracts_with_vuln_percentage'] = round(results_by_tool[toolid]['contracts_with_vuln_percentage'], 2)
+    tool_results = results_by_tool[toolid]
+    tool_results['total_duration'] = round(tool_results['total_duration'], 2)
+    tool_results['avg_duration'] = round(tool_results['avg_duration'], 2)
+    tool_results['timeout_percentage'] = round(tool_results['timeout_percentage'], 2)
+    tool_results['success_percentage'] = round(tool_results['success_percentage'], 2)
+    tool_results['contracts_with_vuln_percentage'] = round(tool_results['contracts_with_vuln_percentage'], 2)
 
-    results_by_tool[toolid]['errors'] = {}
-    results_by_tool[toolid]['fails'] = {}
-    # results_by_tool[toolid]['findings_per_contract'] = {}
-    # results_by_tool[toolid]['cat_per_contract'] = {}
-    results_by_tool[toolid]['findings_per_contract'] = [(k, list(v)) for k, v in results_by_tool[toolid]['findings_per_contract'].items()]
-    results_by_tool[toolid]['cat_per_contract'] = [(k, list(v)) for k, v in results_by_tool[toolid]['cat_per_contract'].items()]
+    tool_results['errors'] = {}
+    tool_results['fails'] = {}
+    tool_results['findings_per_contract'] = {}
+    tool_results['cat_per_contract'] = {}
+    # tool_results['findings_per_contract'] = {k: list(v) for k, v in tool_results['findings_per_contract'].items()}
+    # tool_results['cat_per_contract'] = {k: list(v) for k, v in tool_results['cat_per_contract'].items()}
 
 logger(f'=== Results ===')
 results = {
@@ -297,17 +298,16 @@ results = {
     'total_sucessful': total_sucessful,
     'total_analysis': total_analysis,
     'total_timeouts': total_timeouts,
-    'total_contracts': len(vulns_per_contract),
+    'total_contracts': q_contracts,
     'total_contracts_with_vuln': total_contracts_with_vuln,
     'percentage_contracts_with_vuln': percentage_contracts_with_vuln,
     'timeout_percentage': timeout_percentage,
     'success_percentage': success_percentage,
-    'vulns_per_category': vulns_per_category,
+    # 'vulns_per_category': vulns_per_category,
     'total_avg_duration': total_avg_duration,
+    'q_contract_per_cat': q_contract_per_cat,
     'unmapped_list': list(unmapped_list),
-    # 'cat_per_contract': cat_per_contract,
-    'contract_per_cat': contract_per_cat,
-    'cat_per_contract': cat_per_contract,
+    # 'contract_per_cat': contract_per_cat, # too big
 }
 
 # print(results)
