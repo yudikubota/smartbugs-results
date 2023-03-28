@@ -69,23 +69,36 @@ print(dict(dist.items()))
 print('expected_total', expected_total)
 print('total', total)
 
-fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
+# fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
 
-fig.suptitle('Distribuição das versões de solidity')
+# fig.suptitle('Distribuição das versões de solidity')
 
 # plot version distribution
 # ax1.title('Distribuição das versões de solidity em ordem cronológica')
-ax1.bar(range(len(dist)), dist.values(), align='center')
+# ax1.bar(range(len(dist)), dist.values(), align='center')
 # ax1.xticks(range(len(dist)), dist.keys(), rotation=90)
 
 # order by value
-dist = OrderedDict(sorted(dist.items(), key=lambda t: t[1], reverse=True))
-print('5 most common', list(dist.items())[:5])
+# dist = OrderedDict(sorted(dist.items(), key=lambda t: t[1], reverse=True))
+# print('5 most common', list(dist.items())[:5])
 
 # plot version distribution
 # ax2.title('Distribuição das versões de solidity em ordem de ocorrência')
-ax2.bar(range(len(dist)), dist.values(), align='center')
+# ax2.bar(range(len(dist)), dist.values(), align='center')
 # ax2.xticks(range(len(dist)), dist.keys(), rotation=90)
 
-fig.savefig('../metadata/plot_version.png')
+# fig.savefig('../metadata/plot_version.png')
+
+# plot version distribution ordered by version number with axis labels
+plt.title('Distribuição das versões de solidity')
+plt.bar(range(len(dist)), dist.values(), align='center')
+# print x axis labels in order jumping a number of labels to avoid overlapping but always show the last label.
+# Also, smaller font and no rotation.
+xtick_positions = range(0, len(dist), int(len(dist)/10))
+print('xtick_positions', xtick_positions)
+xtick_labels = [list(dist.keys())[i] for i in xtick_positions]
+plt.xticks(xtick_positions, xtick_labels, rotation=0, fontsize=8)
+plt.xlabel('Versão')
+plt.ylabel('Número de contratos')
+plt.savefig('../metadata/plot_version.png')
 
